@@ -6,9 +6,6 @@
  * @subpackage Console
  */
 
-/** include Qi_Console_Std */
-require_once 'Qi/Console/Std.php';
-
 /**
  * Terminal
  *
@@ -67,7 +64,6 @@ class Qi_Console_Terminal
         if (isset($options['terminfo'])) {
             $this->_terminfo = $options['terminfo'];
         } else {
-            include_once 'Qi/Console/Terminfo.php';
             $this->_terminfo = new Qi_Console_Terminfo();
         }
 
