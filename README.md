@@ -1,14 +1,38 @@
 Qi Console
 ==========
 
-Qi Console provides library classes for dealing with the console or terminal
-for PHP.
+Qi Console provides PHP library classes for dealing with the console or terminal.
 
 ## Installation
 
-## Documentation
+Use composer to include the `Qi_Console` library in a project.
 
-### ArgV
+Add the following composer.json file to your project:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "http://github.com/sumpygump/qi-console"
+        }
+    ],
+    "require": {
+        "sumpygump/qi-console": "dev-master"
+    }
+}
+```
+    
+Then run composer install to fetch.
+
+    $ composer.phar install
+
+You can also download the files and place them in a library folder. Be sure
+to update your autoloader to handle the `Qi_Console_*` classes.
+
+# Documentation
+
+## ArgV
 
 ArgV provides a way to assign and gather command line arguments
 
@@ -25,7 +49,7 @@ Examples of script arguments it can potentially parse:
  - long parameter shunt (--param=value)
  - standalone argument (filename)
 
-#### Usage 
+### Usage 
 
 The constructor takes two arguments: `$argv` and `$rules`
 
@@ -38,13 +62,15 @@ following:
 Then in your script PHP will provide a variable `$argv` representative of the
 elements of the arguments passed in as an array like this:
 
-    array(
-        'myscript.php',
-        '-v',
-        '--flag',
-        '--param=value',
-        'okay',
-    );
+```php
+array(
+    'myscript.php',
+    '-v',
+    '--flag',
+    '--param=value',
+    'okay',
+);
+```
 
 The argument `$rules` is a definition of options and help messages. The format
 is a key value array where the key is the option definition (possible
@@ -70,34 +96,36 @@ Here are some examples illustrating the possible rules keys:
 
 Here is some example code that illustrates the above:
 
-    // Example rules with some help messages
-    $rules = array(
-        'v' => 'Use verbose messaging',
-        'o' => 'Another random option',
-        'flag' => 'Flag something as special',
-        'name|n:' => 'Provide a name to use',
-        'arg:filename' => 'Filename to parse',
-    );
+```php
+// Example rules with some help messages
+$rules = array(
+    'v' => 'Use verbose messaging',
+    'o' => 'Another random option',
+    'flag' => 'Flag something as special',
+    'name|n:' => 'Provide a name to use',
+    'arg:filename' => 'Filename to parse',
+);
 
-    // Our example input
-    // php scriptname -v --flag --name "a name" filename.txt
-    $argv = array(
-        'scriptname', // The first argument is always ignored by ArgV
-        '-v',
-        '--flag',
-        '--name',
-        '"a name"',
-        'filename.txt',
-    );
+// Our example input
+// php scriptname -v --flag --name "a name" filename.txt
+$argv = array(
+    'scriptname', // The first argument is always ignored by ArgV
+    '-v',
+    '--flag',
+    '--name',
+    '"a name"',
+    'filename.txt',
+);
 
-    $arguments = new Qi_Console_ArgV($argv, $rules);
+$arguments = new Qi_Console_ArgV($argv, $rules);
 
-    // Now we can reference the following:
-    $arguments->v; // true
-    $arguments->o; // false
-    $arguments->flag; // true
-    $arguments->name; // equal to 'a name'
-    $arguments->filename; // equal to 'filename.txt'
+// Now we can reference the following:
+$arguments->v; // true
+$arguments->o; // false
+$arguments->flag; // true
+$arguments->name; // equal to 'a name'
+$arguments->filename; // equal to 'filename.txt'
+```
 
 Note that any additional options that were not defined in the rules array, but
 were passed in as input will result in sensible defaults, so options
@@ -106,7 +134,7 @@ the values passed in (`$arguments->anothername == 'value'`). Additional
 non-option arguments will be available as `$arguments->__arg2`,
 `$arguments->__arg3`, etc.
 
-### Client
+## Client
 
 The `Qi_Console_Client` class provides a base console client that can be used
 to create command line clients. It takes input as `$argv` and a Terminal object
@@ -123,102 +151,110 @@ Methods:
     _safeExit()
     init()
 
-#### Basic Usage
+### Basic Usage
 
-    class MyClient extends Qi_Console_Client
+```php
+class MyClient extends Qi_Console_Client
+{
+    public function init()
     {
-        public function init()
-        {
-            // Initialization logic
-        }
-
-        public function execute()
-        {
-            // Execute the main logic of this client
-            // Use $this->_args (ArgV object) to handle input and react
-            // Use $this->_displayWarning() to output warning message to user
-            // etc.
-        }
+        // Initialization logic
     }
 
-    $arguments = new Qi_Console_ArgV($argv, $rules);
-    $terminal = new Qi_Console_Terminal();
+    public function execute()
+    {
+        // Execute the main logic of this client
+        // Use $this->_args (ArgV object) to handle input and react
+        // Use $this->_displayWarning() to output warning message to user
+        // etc.
+    }
+}
 
-    $myClient = new MyClient($arguments, $terminal);
-    $myClient->execute();
+$arguments = new Qi_Console_ArgV($argv, $rules);
+$terminal = new Qi_Console_Terminal();
 
-### ExceptionHandler
+$myClient = new MyClient($arguments, $terminal);
+$myClient->execute();
+```
+
+## ExceptionHandler
 
 The exception handler provides a way to handle exceptions from your console
 application. It uses the Terminal object to output pretty messages.
 
-    $terminal = new Qi_Console_Terminal();
-    $exceptionHandler = new Qi_Console_ExceptionHandler($terminal);
-    $exceptionHandler->bindHandlers();
+```php
+$terminal = new Qi_Console_Terminal();
+$exceptionHandler = new Qi_Console_ExceptionHandler($terminal);
+$exceptionHandler->bindHandlers();
 
-    // Now any time an exception is thrown, it will output a pretty message
-    // with colors and exit.
-
-### Menu
+// Now any time an exception is thrown, it will output a pretty message
+// with colors and exit.
+```
+    
+## Menu
 
 `Qi_Console_Menu` provides a way to prompt a user with a menu and receive
 input. Please see the code for documentation.
 
-### ProgressBar
+## ProgressBar
 
 `Qi_Console_ProgressBar` provides the ability to display a progress bar in the
 terminal. Please see the code for documentation.
 
-### Std
+## Std
 
 `Qi_Console_Std` is a wrapper for stdin, stdout and stderr.
  
 This class provides methods for sending and receiving input from stdin and
 output to stdout and stderr.
 
-    // Receive input from STDIN
-    $input = Qi_Console_Std::in();
+```php
+// Receive input from STDIN
+$input = Qi_Console_Std::in();
 
-    // Output to STDOUT
-    Qi_Console_Std::out('Some text');
+// Output to STDOUT
+Qi_Console_Std::out('Some text');
 
-    // Output to STDERR
-    Qi_Console_Std::err('Error output');
+// Output to STDERR
+Qi_Console_Std::err('Error output');
+```
 
-### Tabular
+## Tabular
 
 `Qi_Console_Tabular` generates ascii tables for displaying tabular data.
 
-    // Define the table data
-    $tableData = array(
-        array('John', '28', 'Green'),
-        array('Hannah', '7', 'Violet'),
-        array('Michael', '43', 'Red'),
-    );
+```php
+// Define the table data
+$tableData = array(
+    array('John', '28', 'Green'),
+    array('Hannah', '7', 'Violet'),
+    array('Michael', '43', 'Red'),
+);
 
-    // Define the headers for the columns
-    $headers = array(
-        'Name',
-        'Age',
-        'Favorite Color',
-    );
+// Define the headers for the columns
+$headers = array(
+    'Name',
+    'Age',
+    'Favorite Color',
+);
 
-    // Define optional alignment for columns
-    $alignment = array(
-        'L',
-        'R',
-        'L'
-    );
+// Define optional alignment for columns
+$alignment = array(
+    'L',
+    'R',
+    'L'
+);
 
-    $tabular = new Qi_Console_Tabular(
-        $tableData,
-        array(
-            'headers'   => $headers,
-            'cellalign' => $alignment,
-        )
-    );
+$tabular = new Qi_Console_Tabular(
+    $tableData,
+    array(
+        'headers'   => $headers,
+        'cellalign' => $alignment,
+    )
+);
 
-    $tabular->display();
+$tabular->display();
+```
 
 This will output the following table:
 
@@ -230,7 +266,7 @@ This will output the following table:
     |  Michael  |   43  |  Red             |
     +--------------------------------------+
 
-### Terminal and Terminfo
+## Terminal and Terminfo
 
 `Qi_Console_Terminal` is a wrapper for `Qi_Console_Terminfo` which uses the
 UNIX terminfo mapping database to provide functionality for outputting escape
@@ -242,31 +278,32 @@ For more information about terminfo, check out these resources:
  - [Man page for terminfo](http://invisible-island.net/ncurses/man/terminfo.5.html)
  - [Terminal Capabilities](https://en.wikipedia.org/wiki/Terminal_capabilities)
 
-#### Basic Usage
+### Basic Usage
 
-    $terminal = new Qi_Console_Terminal();
+```php
+$terminal = new Qi_Console_Terminal();
 
-    // Clear the screen
-    $terminal->clear();
+// Clear the screen
+$terminal->clear();
 
-    $terminal->set_fgcolor(1);
-    echo "Text is now red.\n";
+$terminal->set_fgcolor(1);
+echo "Text is now red.\n";
 
-    $terminal->set_fgcolor(2);
-    echo "Text is now green.\n";
+$terminal->set_fgcolor(2);
+echo "Text is now green.\n";
 
-    $terminal->bold_type();
-    echo "Text is now bold.\n";
+$terminal->bold_type();
+echo "Text is now bold.\n";
 
-    $terminal->center_text("This text is centered.");
+$terminal->center_text("This text is centered.");
 
-    // This is using the terminfo capability "Original Pair" to set the colors
-    // back to default.
-    $terminal->op();
-    echo "Now text is back to default color.\n";
+// This is using the terminfo capability "Original Pair" to set the colors
+// back to default.
+$terminal->op();
+echo "Now text is back to default color.\n";
 
-    // This is using the terminfo capability sgr0 which turns off all text
-    // attributes, meaning it is not bold anymore.
-    $terminal->sgr0();
-    echo "Now text is not bold anymore.\n";
-
+// This is using the terminfo capability sgr0 which turns off all text
+// attributes, meaning it is not bold anymore.
+$terminal->sgr0();
+echo "Now text is not bold anymore.\n";
+```
