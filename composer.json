@@ -1,0 +1,22 @@
+{
+    "name": "sumpygump/qi-console",
+    "type": "library",
+    "description": "Console utilities",
+    "keywords": ["console","terminal","terminfo"],
+    "homepage": "http://quantalideas.com/code/qi-console",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jansen Price",
+            "email": "jansen.price@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-0" : {
+            "Qi_Console_" : "lib/"
+        }
+    }
+}
