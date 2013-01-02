@@ -3,6 +3,8 @@ Qi Console
 
 Qi Console provides PHP library classes for dealing with the console or terminal.
 
+[![Build Status](https://travis-ci.org/sumpygump/qi-console.png)](https://travis-ci.org/sumpygump/qi-console)
+
 ## Installation
 
 Use composer to include the `Qi_Console` library in a project.
