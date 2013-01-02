@@ -8,5 +8,8 @@ php:
   - 5.3
   - 5.4
 
+before_script:
+  - composer install
+
 # omitting "script:" will default to phpunit
 script: phpunit --bootstrap=tests/bootstrap.php tests
