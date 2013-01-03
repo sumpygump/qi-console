@@ -90,7 +90,9 @@ class Qi_Console_TermLetters
             $this->_terminal = new Qi_Console_Terminal();
         }
 
-        $this->_width = $this->_terminal->get_columns($this->_terminal->isatty());
+        $this->_width = $this->_terminal->get_columns(
+            $this->_terminal->isatty()
+        );
 
         if (isset($options['width'])) {
             $this->_width = $options['width'];
@@ -188,7 +190,7 @@ class Qi_Console_TermLetters
     protected function _resetLineBuffer()
     {
         $this->_lineBuffer = array();
-        $this->_bufferLen = 0;
+        $this->_bufferLen  = 0;
     }
 
     /**
@@ -207,8 +209,11 @@ class Qi_Console_TermLetters
 
         $lines = explode("\n", $text);
 
+        $letterAndBufferWidth = $this->getLetterWidth($char)
+            + $this->_bufferLen + 1;
+
         if ($this->_enableWrap
-            && $this->getLetterWidth($char) + $this->_bufferLen + 1 > $this->_width
+            && $letterAndBufferWidth > $this->_width
         ) {
             $this->_echoBuffer();
         } 
@@ -221,7 +226,8 @@ class Qi_Console_TermLetters
 
         // Add the width of this char to the buffer len (include the space 
         // in between the chars
-        $this->_bufferLen = $this->_bufferLen + $this->getLetterWidth($char) + 1;
+        $this->_bufferLen = $this->_bufferLen
+            + $this->getLetterWidth($char) + 1;
 
         return $this->_bufferLen;
     }
@@ -249,7 +255,8 @@ class Qi_Console_TermLetters
         if (!isset($this->_lineBuffer[$index])) {
             $this->_lineBuffer[$index] = $text;
         } else {
-            $this->_lineBuffer[$index] = $this->_lineBuffer[$index] . ' ' . $text;
+            $this->_lineBuffer[$index] = $this->_lineBuffer[$index]
+                . ' ' . $text;
         }
 
         return strlen($this->_lineBuffer[$index]);
@@ -275,7 +282,7 @@ class Qi_Console_TermLetters
     /**
      * Generate a letter shape
      * 
-     * @param string $letter
+     * @param string $letter Character to generate
      * @return string
      */
     public function generate_letter($letter)
@@ -285,8 +292,10 @@ class Qi_Console_TermLetters
         }
 
         $letter_data = $this->_letters[$letter];
+
         $len = strlen($letter_data);
         $out = '';
+
         $letter_data = str_split($letter_data);
 
         foreach ($letter_data as $char) {
@@ -345,7 +354,9 @@ class Qi_Console_TermLetters
 
         $str = '';
         foreach ($codes as $code) {
-            $str.= html_entity_decode('&#' . $code . ';', ENT_NOQUOTES, 'UTF-8');
+            $str .= html_entity_decode(
+                '&#' . $code . ';', ENT_NOQUOTES, 'UTF-8'
+            );
         }
 
         return $str;

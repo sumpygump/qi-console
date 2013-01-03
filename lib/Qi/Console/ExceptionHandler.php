@@ -63,13 +63,13 @@ class Qi_Console_ExceptionHandler
     /**
      * Handle exception
      * 
-     * @param Exception $e
+     * @param Exception $exception Exception object
      * @return void
      */
-    public function handleException(Exception $e)
+    public function handleException(Exception $exception)
     {
         echo "\n";
-        $this->_terminal->pretty_message($e->getMessage(), 7, 1);
+        $this->_terminal->pretty_message($exception->getMessage(), 7, 1);
         echo "\n";
         
         exit(1);
