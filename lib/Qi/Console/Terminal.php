@@ -442,9 +442,6 @@ class Qi_Console_Terminal
             $out  = call_user_func_array(
                 array($this->_terminfo, 'doCapability'), $args
             );
-        } else {
-            // Not a capability
-            // do nothing
         }
 
         if ($echo) {
@@ -540,8 +537,8 @@ class Qi_Console_Terminal
      *
      * @return void
      */
-    public function dump_cache()
+    public function dumpCache()
     {
-        $this->_terminfo->dump_cache();
+        $this->_terminfo->dumpCache();
     }
 }

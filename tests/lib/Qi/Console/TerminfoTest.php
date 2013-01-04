@@ -169,9 +169,11 @@ class Qi_Console_TerminfoTest extends BaseTestCase
     {
         // Run a cap so the cache gets populated with something
         $this->_object->doCapability('op');
+        $this->_object->doCapability('op1');
+        $this->_object->doCapability('op');
 
         ob_start();
-        $this->_object->dump_cache();
+        $this->_object->dumpCache();
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -215,7 +217,7 @@ class Qi_Console_TerminfoTest extends BaseTestCase
         $this->_object->op();
 
         ob_start();
-        $this->_object->dump_cache();
+        $this->_object->dumpCache();
         $result = ob_get_contents();
         ob_end_clean();
 

@@ -527,7 +527,7 @@ class Qi_Console_TerminalTest extends BaseTestCase
         $this->_object->do_op();
 
         ob_start();
-        $this->_object->dump_cache();
+        $this->_object->dumpCache();
         $result = ob_get_contents();
         ob_end_clean();
 
