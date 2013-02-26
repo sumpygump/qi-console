@@ -5,20 +5,14 @@ Qi Console provides PHP library classes for dealing with the console or terminal
 
 [![Build Status](https://travis-ci.org/sumpygump/qi-console.png)](https://travis-ci.org/sumpygump/qi-console)
 
-## Installation
+## Installation with Composer
 
 Use composer to include the `Qi_Console` library in a project.
 
-Add the following composer.json file to your project:
+Add the following composer.json file to your project directory:
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "http://github.com/sumpygump/qi-console"
-        }
-    ],
     "require": {
         "sumpygump/qi-console": "dev-master"
     }
@@ -29,8 +23,30 @@ Then run composer install to fetch.
 
     $ composer.phar install
 
-You can also download the files and place them in a library folder. Be sure
-to update your autoloader to handle the `Qi_Console_*` classes.
+If you don't have composer already installed, this is my recommendation for
+installing it. See
+[getcomposer.org installation instructions](http://getcomposer.org/doc/00-intro.md#globally).
+
+```
+$ curl -sS https://getcomposer.org/installer | php
+$ sudo mv composer.phar /usr/local/bin/composer
+```
+
+Once the files have been composed with the `composer install` command, you can
+use any of the `Qi_Console_` classes after composer's autoloader is included.
+
+```php
+require 'vendor/autoload.php';
+
+$terminal = new Qi_Console_Terminal();
+// ...
+```
+
+## Manual Installation
+
+You can also download the files and place them in a library folder. If you do
+this, be sure to update your autoloader to handle the `Qi_Console_*` classes or
+else manually include the files of the classes you'll need.
 
 # Documentation
 
