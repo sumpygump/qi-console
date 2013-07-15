@@ -144,6 +144,28 @@ class Qi_Console_TabularTest extends BaseTestCase
     }
 
     /**
+     * Test option border
+     *
+     * @return void
+     */
+    public function testNoBorder()
+    {
+        $data = 101;
+
+        $options = array(
+            'border'   => false,
+        );
+
+        $this->_object = new Qi_Console_Tabular($data, $options);
+
+        $expected = "101\n";
+
+        $result = $this->_object->display(true);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
      * Test align right
      *
      * @return void
@@ -219,6 +241,33 @@ class Qi_Console_TabularTest extends BaseTestCase
             . "+-----------------------------------------+\n"
             . "|  Aartha  |  aartha@example.com  |  42   |\n"
             . "+-----------------------------------------+\n";
+
+        $result = $this->_object->display(true);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test option border without columns
+     *
+     * @return void
+     */
+    public function testMultipleColumnsNoBorder()
+    {
+        $data = array(
+            array( 'Aartha', 'aartha@example.com', '42'),
+            array( 'Bea', 'bea@example.com', '68'),
+        );
+
+        $options = array(
+            'headers'  => array('name', 'email', 'age'),
+            'border'   => false,
+        );
+
+        $this->_object = new Qi_Console_Tabular($data, $options);
+
+        $expected = "name    email               age\n"
+            . "Aartha  aartha@example.com  42 \n"
+            . "Bea     bea@example.com     68 \n";
 
         $result = $this->_object->display(true);
         $this->assertEquals($expected, $result);
