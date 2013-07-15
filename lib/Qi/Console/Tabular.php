@@ -57,6 +57,7 @@ class Qi_Console_Tabular
      *      'cellalign'   - an indexed array of the alignment option
      *                      for each column. Possible values are 'L', 'R'
      *      'border'      - whether or not to display a border
+     *      'margin'      - margin on the left
      * @return void
      */
     public function __construct($data = null, $options = array())
@@ -68,6 +69,7 @@ class Qi_Console_Tabular
         $this->_options = array(
             'cellpadding' => '2',
             'border' => true,
+            'margin' => 0,
         );
 
         $this->_parseOptions($options);
@@ -131,6 +133,8 @@ class Qi_Console_Tabular
             case 'border':
                 $this->_options['border'] = $value;
                 break;
+            case 'margin':
+                $this->_options['margin'] = $value;
             default:
                 break;
             }
@@ -169,12 +173,13 @@ class Qi_Console_Tabular
 
         $padding = str_repeat(" ", $this->_options['cellpadding']);
         $border = $this->_options['border'];
+        $margin = str_repeat(" ", $this->_options['margin']);
 
         $headerContent = '';
         $rowsepString  = '';
 
         if (count($this->headers)) {
-            $headerContent .= ($border ? "|" : "");
+            $headerContent .= $margin . ($border ? "|" : "");
             for ($i = 0; $i < count($this->headers); $i++) {
                 $string = ($border || $i > 0 ? $padding : "")
                     . str_pad($this->headers[$i], $this->cols[$i])
@@ -183,7 +188,9 @@ class Qi_Console_Tabular
                 $headerContent .= $string;
             }
 
-            $rowsepString = $border ? "+" . str_repeat("-", strlen($headerContent) - 2) . "+\n" : "";
+            $rowsepString = $border ?
+                $margin . "+" . str_repeat("-", strlen($headerContent) - strlen($margin) - 2) . "+\n" :
+                "";
 
             $out .= $rowsepString . $headerContent
                 . "\n" . $rowsepString;
@@ -191,7 +198,7 @@ class Qi_Console_Tabular
 
         $tableContent = '';
         foreach ($this->data as $row) {
-            $content = $border ? '|' : '';
+            $content = $margin . ($border ? '|' : '');
             $i       = 0;
 
             foreach ($row as $col) {
@@ -207,7 +214,9 @@ class Qi_Console_Tabular
             $tableContent .= $content . "\n";
 
             if (!$rowsepString) {
-                $rowsepString = $border ? "+" . str_repeat("-", strlen($content)-2) . "+\n" : "";
+                $rowsepString = $border ? 
+                    $margin . "+" . str_repeat("-", strlen($content) - strlen($margin) - 2) . "+\n" :
+                    "";
             }
         }
 

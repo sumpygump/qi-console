@@ -166,6 +166,33 @@ class Qi_Console_TabularTest extends BaseTestCase
     }
 
     /**
+     * Test option margin
+     *
+     * @return void
+     */
+    public function testMargin()
+    {
+        $data = 101;
+
+        $options = array(
+            'headers'  => array('heading'),
+            'margin'   => 5,
+        );
+
+        $this->_object = new Qi_Console_Tabular($data, $options);
+
+        $expected = "     +-----------+\n"
+            . "     |  heading  |\n"
+            . "     +-----------+\n"
+            . "     |  101      |\n"
+            . "     +-----------+\n";
+
+        $result = $this->_object->display(true);
+        
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
      * Test align right
      *
      * @return void
