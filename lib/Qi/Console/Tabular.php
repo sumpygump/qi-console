@@ -56,6 +56,8 @@ class Qi_Console_Tabular
      *      'cellpadding' - how many spaces for the cellpadding
      *      'cellalign'   - an indexed array of the alignment option
      *                      for each column. Possible values are 'L', 'R'
+     *      'border'      - whether or not to display a border
+     *      'margin'      - margin on the left
      * @return void
      */
     public function __construct($data = null, $options = array())
@@ -66,6 +68,8 @@ class Qi_Console_Tabular
 
         $this->_options = array(
             'cellpadding' => '2',
+            'border' => true,
+            'margin' => 0,
         );
 
         $this->_parseOptions($options);
@@ -126,6 +130,11 @@ class Qi_Console_Tabular
             case 'cellalign':
                 $this->_options['cellalign'] = $value;
                 break;
+            case 'border':
+                $this->_options['border'] = $value;
+                break;
+            case 'margin':
+                $this->_options['margin'] = $value;
             default:
                 break;
             }
@@ -163,39 +172,40 @@ class Qi_Console_Tabular
         $this->_determineColumnWidths();
 
         $padding = str_repeat(" ", $this->_options['cellpadding']);
+        $border = $this->_options['border'];
+        $margin = str_repeat(" ", $this->_options['margin']);
 
         $headerContent = '';
         $rowsepString  = '';
 
         if (count($this->headers)) {
-            $headerContent .= "|";
+            $headerContent .= $margin . ($border ? "|" : "");
             for ($i = 0; $i < count($this->headers); $i++) {
-                $string = $padding
+                $string = ($border || $i > 0 ? $padding : "")
                     . str_pad($this->headers[$i], $this->cols[$i])
-                    . $padding
-                    . "|";
+                    . ($border ? $padding . "|" : "");
 
                 $headerContent .= $string;
             }
 
-            $rowsepString = "+"
-                . str_repeat("-", strlen($headerContent) - 2) . "+";
+            $rowsepString = $border ?
+                $margin . "+" . str_repeat("-", strlen($headerContent) - strlen($margin) - 2) . "+\n" :
+                "";
 
-            $out .= $rowsepString . "\n" . $headerContent
-                . "\n" . $rowsepString . "\n";
+            $out .= $rowsepString . $headerContent
+                . "\n" . $rowsepString;
         }
 
         $tableContent = '';
         foreach ($this->data as $row) {
-            $content = '|';
+            $content = $margin . ($border ? '|' : '');
             $i       = 0;
 
             foreach ($row as $col) {
                 $padType = $this->getPadTypeForCol($i);
-                $string  = $padding
+                $string  = ($border || $i > 0 ? $padding : "")
                     . str_pad(trim($col), $this->cols[$i], ' ', $padType)
-                    . $padding
-                    . "|";
+                    . ($border ? $padding . "|" : "");
 
                 $content .= $string;
                 $i++;
@@ -204,16 +214,18 @@ class Qi_Console_Tabular
             $tableContent .= $content . "\n";
 
             if (!$rowsepString) {
-                $rowsepString = "+" . str_repeat("-", strlen($content)-2) . "+";
+                $rowsepString = $border ? 
+                    $margin . "+" . str_repeat("-", strlen($content) - strlen($margin) - 2) . "+\n" :
+                    "";
             }
         }
 
         // If there were no headers, add the top line
         if (!count($this->headers)) {
-            $tableContent = $rowsepString . "\n" . $tableContent;
+            $tableContent = $rowsepString . $tableContent;
         }
 
-        $out .= $tableContent . $rowsepString . "\n";
+        $out .= $tableContent . $rowsepString;
 
         if ($buffer) {
             return $out;
