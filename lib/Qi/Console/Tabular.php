@@ -135,6 +135,10 @@ class Qi_Console_Tabular
                 break;
             case 'margin':
                 $this->_options['margin'] = $value;
+                break;
+            case 'escapes':
+                $this->_options['escapes'] = $value;
+                break;
             default:
                 break;
             }
@@ -182,7 +186,7 @@ class Qi_Console_Tabular
             $headerContent .= $margin . ($border ? "|" : "");
             for ($i = 0; $i < count($this->headers); $i++) {
                 $string = ($border || $i > 0 ? $padding : "")
-                    . str_pad($this->headers[$i], $this->cols[$i])
+                    . $this->eb_str_pad($this->headers[$i], $this->cols[$i])
                     . ($border ? $padding . "|" : "");
 
                 $headerContent .= $string;
@@ -204,7 +208,7 @@ class Qi_Console_Tabular
             foreach ($row as $col) {
                 $padType = $this->getPadTypeForCol($i);
                 $string  = ($border || $i > 0 ? $padding : "")
-                    . str_pad(trim($col), $this->cols[$i], ' ', $padType)
+                    . $this->eb_str_pad(trim($col), $this->cols[$i], ' ', $padType)
                     . ($border ? $padding . "|" : "");
 
                 $content .= $string;
@@ -234,6 +238,12 @@ class Qi_Console_Tabular
         }
     }
 
+    protected function eb_str_pad($input, $pad_length, $pad_string = ' ', $pad_type = STR_PAD_RIGHT)
+    {
+        $diff = strlen($input) - strlen($this->_replaceEscapes($input));
+        return str_pad($input, $pad_length + $diff, $pad_string, $pad_type);
+    }
+
     /**
      * _determineColumnWidths 
      * 
@@ -244,7 +254,8 @@ class Qi_Console_Tabular
         $headerCount = count($this->headers);
         if ($headerCount) {
             for ($i = 0; $i < $headerCount; $i++) {
-                $this->_setColumnWidth($i, strlen(trim($this->headers[$i])));
+                $text = $this->_replaceEscapes(trim($this->headers[$i]));
+                $this->_setColumnWidth($i, strlen($text));
             }
         }
 
@@ -253,12 +264,28 @@ class Qi_Console_Tabular
         for ($r = 0; $r < $dataCount; $r++) {
             $columnIndex = 0;
             foreach ($this->data[$r] as $column) {
+                $text = $this->_replaceEscapes(trim($column));
                 $this->_setColumnWidth(
-                    $columnIndex, strlen(trim($column))
+                    $columnIndex, strlen($text)
                 );
                 $columnIndex++;
             }
         }
+    }
+
+    /**
+     * Replace escape chars in order to determine actual width
+     *
+     * @param string $text
+     * @return string
+     */
+    protected function _replaceEscapes($text)
+    {
+        if (!isset($this->_options['escapes'])) {
+            return $text;
+        }
+
+        return str_replace($this->_options['escapes'], '', $text);
     }
 
     /**
