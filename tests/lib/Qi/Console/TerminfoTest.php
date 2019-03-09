@@ -2,18 +2,19 @@
 /**
  * Qi Console Terminfo Test Class file
  *
- * @package Qis
+ * @package Qi
  */
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * Qi_Console_TerminfoTest
  *
- * @uses BaseTestCase
- * @package Qis
+ * @package Qi
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_TerminfoTest extends BaseTestCase
+class Qi_Console_TerminfoTest extends TestCase
 {
     /**
      * Setup before each test
@@ -232,5 +233,6 @@ class Qi_Console_TerminfoTest extends BaseTestCase
     public function testGetTerminfoBinData()
     {
         $this->_object->getTerminfoBinData();
+        $this->assertTrue(true);
     }
 }

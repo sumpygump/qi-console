@@ -5,15 +5,16 @@
  * @package Qis
  */
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Qi_Console_Std Test class
  *
- * @uses BaseTestCase
  * @package Qis
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_StdTest extends BaseTestCase
+class Qi_Console_StdTest extends TestCase
 {
     /**
      * Setup before each test
@@ -35,7 +36,7 @@ class Qi_Console_StdTest extends BaseTestCase
 
     /**
      * Test out method
-     * 
+     *
      * @return void
      */
     public function testOut()

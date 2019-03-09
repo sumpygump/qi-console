@@ -469,7 +469,7 @@ class Qi_Console_Terminal
     public function do_capability($cap_name, $args = array())
     {
         if (!$this->_terminfo->hasCapability($cap_name)) {
-            trigger_error($cap_name . " not a cap");
+            printf("%s not a cap", $cap_name);
         }
 
         $args = array_merge(array($cap_name), $args);

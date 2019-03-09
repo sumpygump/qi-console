@@ -5,15 +5,16 @@
  * @package Qis
  */
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Qi_Console_ArgV Test class
  *
- * @uses BaseTestCase
  * @package Qis
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_ArgVTest extends BaseTestCase
+class Qi_Console_ArgVTest extends TestCase
 {
     /**
      * Setup before each test
@@ -36,7 +37,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Create object
-     * 
+     *
      * @param array $args Arguments
      * @param array $rules Rules
      * @return void
@@ -52,18 +53,19 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Arguments are required
-     * 
-     * @expectedException PHPUnit_Framework_Error_Warning
+     *
      * @return void
      */
     public function testConstructorNoArguments()
     {
+        $this->expectException(\ArgumentCountError::class);
+        $this->expectExceptionMessage("Too few arguments");
         $this->_object = new Qi_Console_ArgV();
     }
 
     /**
      * Test constructor with empty argv
-     * 
+     *
      * @return void
      */
     public function testConstructorEmptyArgv()
@@ -74,7 +76,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test construction with string
-     * 
+     *
      * @return void
      */
     public function testConstructorString()
@@ -91,7 +93,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a null argument
-     * 
+     *
      * @return void
      */
     public function testParseNullArgument()
@@ -102,7 +104,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing an associated array
-     * 
+     *
      * @return void
      */
     public function testParseAssociatedArray()
@@ -123,7 +125,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a single short option
-     * 
+     *
      * @return void
      */
     public function testParseSingleShortOption()
@@ -142,7 +144,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parseing a single short option group
-     * 
+     *
      * @return void
      */
     public function testParseSingleShortOptionGroup()
@@ -162,7 +164,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a single long opton
-     * 
+     *
      * @return void
      */
     public function testParseSingleLongOption()
@@ -181,7 +183,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a single short parameter without rules
-     * 
+     *
      * @return void
      */
     public function testParseSingleShortParameterWithoutRules()
@@ -202,7 +204,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a single short parameter with rule
-     * 
+     *
      * @return void
      */
     public function testParseSingleShortParameterWithRule()
@@ -232,7 +234,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a short parameter missing
-     * 
+     *
      * @expectedException Qi_Console_ArgVException
      * @return void
      */
@@ -253,7 +255,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Detect a shunted short parameter
-     * 
+     *
      * @return void
      */
     public function testParseShortParameterShunt()
@@ -279,7 +281,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a short parameter shunt with a prior short parameter
-     * 
+     *
      * @return void
      */
     public function testParseShortParameterShuntWithPriorShortParameter()
@@ -308,7 +310,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test a long parameter
-     * 
+     *
      * @return void
      */
     public function testLongParameter()
@@ -334,7 +336,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a long parameter shunt
-     * 
+     *
      * @return void
      */
     public function testLongParameterShunt()
@@ -359,7 +361,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test long parameter shunt when mixed with other params
-     * 
+     *
      * @return void
      */
     public function testLongParameterShuntWithOthers()
@@ -399,7 +401,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test a situation with a long parameter specified without a rule
-     * 
+     *
      * @return void
      */
     public function testLongParameterShuntWithoutDefinedRuleBeforeArg()
@@ -431,7 +433,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
     /**
      * This ensures that all the content after the first
      * equals sign is the value
-     * 
+     *
      * @return void
      */
     public function testLongParameterShuntValueContainingEqualsSign()
@@ -456,7 +458,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * If a value is required
-     * 
+     *
      * @expectedException Qi_Console_ArgVException
      * @return void
      */
@@ -477,7 +479,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a long and short option
-     * 
+     *
      * @return void
      */
     public function testParseLongAndShortOption()
@@ -503,7 +505,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a standalone argument
-     * 
+     *
      * @return void
      */
     public function testParseStandaloneArgument()
@@ -529,7 +531,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * If a numeric array is provided as rules, there will be no help values
-     * 
+     *
      * @return void
      */
     public function testParseRulesNumericArray()
@@ -552,8 +554,8 @@ class Qi_Console_ArgVTest extends BaseTestCase
     }
 
     /**
-     * Test parsing when a rules option is not considered numeric 
-     * 
+     * Test parsing when a rules option is not considered numeric
+     *
      * @return void
      */
     public function testParseRulesOptionIsNotConsideredNumeric()
@@ -577,7 +579,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing a long and short when short name too long
-     * 
+     *
      * @return void
      */
     public function testParseRulesLongAndShortWhenShortNameIsLongerThanOneChar()
@@ -602,7 +604,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test parsing rules when arg definition is incomplete
-     * 
+     *
      * @return void
      */
     public function testParseRulesWhenArgDefinitionIsIncomplete()
@@ -626,7 +628,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test get rule for options
-     * 
+     *
      * @return void
      */
     public function testGetRuleForOptions()
@@ -662,7 +664,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test get rule for parameters
-     * 
+     *
      * @return void
      */
     public function testGetRuleForParameters()
@@ -698,7 +700,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test add help array
-     * 
+     *
      * @return void
      */
     public function testAddHelpArray()
@@ -709,7 +711,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test get help
-     * 
+     *
      * @return void
      */
     public function testGetHelp()
@@ -730,7 +732,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test multiple options and arguments
-     * 
+     *
      * @return void
      */
     public function testMultipleOptionsAndArguments()
@@ -798,7 +800,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test get Value
-     * 
+     *
      * @return void
      */
     public function testGetValue()
@@ -815,7 +817,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test getting a value that isn't set
-     * 
+     *
      * @return void
      */
     public function testGetValueNotSet()
@@ -832,7 +834,7 @@ class Qi_Console_ArgVTest extends BaseTestCase
 
     /**
      * Test get args
-     * 
+     *
      * @return void
      */
     public function testGetArgs()

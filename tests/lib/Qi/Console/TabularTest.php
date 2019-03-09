@@ -2,18 +2,19 @@
 /**
  * Qi Console Tabular test class file
  *
- * @package Qis
+ * @package Qi
  */
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for Qi Console Tabular
  *
- * @uses BaseTestCase
- * @package Qis
+ * @package Qi
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_TabularTest extends BaseTestCase
+class Qi_Console_TabularTest extends TestCase
 {
     /**
      * Setup before each test
@@ -36,7 +37,7 @@ class Qi_Console_TabularTest extends BaseTestCase
 
     /**
      * Create object
-     * 
+     *
      * @return void
      */
     protected function _createObject()
@@ -188,7 +189,7 @@ class Qi_Console_TabularTest extends BaseTestCase
             . "     +-----------+\n";
 
         $result = $this->_object->display(true);
-        
+
         $this->assertEquals($expected, $result);
     }
 

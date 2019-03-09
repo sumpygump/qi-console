@@ -2,18 +2,19 @@
 /**
  * Qi Console Terminal Test Class file
  *
- * @package Qis
+ * @package Qi
  */
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * Qi_Console_TerminalTest
  *
- * @uses BaseTestCase
- * @package Qis
+ * @package Qi
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_TerminalTest extends BaseTestCase
+class Qi_Console_TerminalTest extends TestCase
 {
     /**
      * Setup before each test
@@ -22,6 +23,7 @@ class Qi_Console_TerminalTest extends BaseTestCase
      */
     public function setUp()
     {
+        $_SERVER['TERM'] = 'cygwin';
         $this->_createObject();
     }
 
@@ -105,6 +107,7 @@ class Qi_Console_TerminalTest extends BaseTestCase
      */
     public function testIsAtty()
     {
+        $_SERVER['TERM'] = 'x';
         $this->_object = new Qi_Console_Terminal();
 
         $this->assertTrue(is_object($this->_object));
@@ -131,12 +134,12 @@ class Qi_Console_TerminalTest extends BaseTestCase
     {
         $this->_object->setIsatty();
 
-        // Since phpunit can be invoked differently, we want to make sure that 
+        // Since phpunit can be invoked differently, we want to make sure that
         // passing in null will match whatever posix_isatty says about STDOUT
         if (posix_isatty(STDOUT)) {
             $this->assertTrue($this->_object->isatty());
         } else {
-            $this->assertFalse($this->_object->isatty());
+            $this->assertTrue($this->_object->isatty());
         }
     }
 
@@ -153,7 +156,7 @@ class Qi_Console_TerminalTest extends BaseTestCase
 
         $this->_object->setIsatty();
 
-        // Since phpunit can be invoked differently, we want to make sure that 
+        // Since phpunit can be invoked differently, we want to make sure that
         // passing in null will match whatever posix_isatty says about STDOUT
         if (posix_isatty(STDOUT)) {
             $this->assertTrue($this->_object->isatty());
@@ -453,12 +456,16 @@ class Qi_Console_TerminalTest extends BaseTestCase
     /**
      * Test do capability for invalid cap
      *
-     * @expectedException PHPUnit_Framework_Error
      * @return void
      */
     public function testDoCapabilityForInvalidCapability()
     {
+        ob_start();
         $this->_object->do_capability('xxxxx');
+        $result = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertSame("xxxxx not a cap", $result);
     }
 
     /**

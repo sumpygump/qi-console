@@ -5,6 +5,8 @@
  * @package Qi
  */
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * TestingClient
  *
@@ -44,12 +46,11 @@ class TestingClient extends Qi_Console_Client
 /**
  * Qi_Console_Client Test class
  *
- * @uses BaseTestCase
  * @package Qi
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_ClientTest extends BaseTestCase
+class Qi_Console_ClientTest extends TestCase
 {
     /**
      * Setup before each test
@@ -85,11 +86,12 @@ class Qi_Console_ClientTest extends BaseTestCase
     /**
      * testConstructor
      *
-     * @expectedException PHPUnit_Framework_Error
      * @return void
      */
     public function testConstructor()
     {
+        $this->expectException(\ArgumentCountError::class);
+        $this->expectExceptionMessage("Too few arguments");
         $client = new Qi_Console_Client();
     }
 
