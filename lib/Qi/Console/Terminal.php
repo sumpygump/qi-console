@@ -63,7 +63,9 @@ class Qi_Console_Terminal
         // Pass in terminfo object
         if (isset($options['terminfo'])) {
             $this->_terminfo = $options['terminfo'];
-        } else {
+        }
+
+        if (!$this->_terminfo) {
             $this->_terminfo = new Qi_Console_Terminfo();
         }
 
@@ -80,10 +82,9 @@ class Qi_Console_Terminal
      */
     private function _setIsatty()
     {
+        $term = null;
         if (isset($_SERVER['TERM'])) {
             $term = $_SERVER['TERM'];
-        } else {
-            $term = null;
         }
 
         if ($this->_isCygwin) {
@@ -240,10 +241,11 @@ class Qi_Console_Terminal
             } else {
                 $this->_columns = $this->_terminfo->getCapability('cols');
             }
-        } else {
-            // TODO: if windows, use the command 'mode' to get the columns
-            $this->_columns = 80;
-        }
+            return $this->_columns;
+        } 
+
+        // TODO: if windows, use the command 'mode' to get the columns
+        $this->_columns = 80;
 
         return $this->_columns;
     }
@@ -266,11 +268,11 @@ class Qi_Console_Terminal
             } else {
                 $this->_lines = $this->_terminfo->getCapability('lines');
             }
-        } else {
-            // TODO: if windows, use the command 'mode' to get the lines
-            $this->_lines = 25 ;
+            return $this->_lines;
         }
-        return $this->_lines;
+
+        // TODO: if windows, use the command 'mode' to get the lines
+        $this->_lines = 25 ;
     }
 
     /**
@@ -281,7 +283,7 @@ class Qi_Console_Terminal
      */
     public function center_text($text)
     {
-        $x = (int) (($this->_columns - strlen($text)) / 2);
+        //$x = (int) (($this->_columns - strlen($text)) / 2);
 
         // Assume cursor is on the beginning of the line
         // Didn't use hpa for lack of support

@@ -41,6 +41,11 @@ class TestingClient extends Qi_Console_Client
     {
         return parent::_displayMessage($message, $ensureNewline, $color);
     }
+
+    public function displayError($message)
+    {
+        return parent::_displayError($message);
+    }
 }
 
 /**
@@ -125,5 +130,16 @@ class Qi_Console_ClientTest extends TestCase
 
         $expected = "\033[31mThere is something amiss\033[39;49m";
         $this->assertEquals($expected, $result);
+    }
+
+    public function testDisplayError()
+    {
+        ob_start();
+        $this->_object->displayError('There is something amiss');
+        $result = ob_get_contents();
+        ob_end_clean();
+
+        $expected = "\033[37m\033[41m  There is something amiss  \033[39;49m";
+        $this->assertContains($expected, $result);
     }
 }
