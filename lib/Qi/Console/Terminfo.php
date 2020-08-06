@@ -541,11 +541,12 @@ class Qi_Console_Terminfo
             ) {
                 unset($this->_terminfoData[0]);
             }
+            $this->_terminfoData[1] = trim($this->_terminfoData[1], ",\t\r\n ");
+            $this->_names           = explode("|", $this->_terminfoData[1]);
+            unset($this->_terminfoData[1]);
+        } else {
+            $this->_terminfoData = [];
         }
-
-        $this->_terminfoData[1] = trim($this->_terminfoData[1], ",\t\r\n ");
-        $this->_names            = explode("|", $this->_terminfoData[1]);
-        unset($this->_terminfoData[1]);
 
         $terminfoString = implode('', $this->_terminfoData);
         $terminfoCaps   = explode(',', $terminfoString);

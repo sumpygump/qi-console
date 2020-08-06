@@ -194,7 +194,7 @@ class Qi_Console_ArgV
                 }
                 $rule = $this->getRule($option);
 
-                if ($rule['type'] == self::TYPE_PARAMETER || $pos !== false) {
+                if ($rule && ($rule['type'] == self::TYPE_PARAMETER || $pos !== false)) {
                     if ($shuntVal != '') {
                         $nextVal = $shuntVal;
                     } else {
@@ -224,7 +224,7 @@ class Qi_Console_ArgV
                     $option = $optionString[$s];
                     $rule   = $this->getRule($option);
 
-                    if ($rule['type'] == self::TYPE_PARAMETER) {
+                    if ($rule && $rule['type'] == self::TYPE_PARAMETER) {
                         $nextVal = $this->_getProperNextVal($argv, $i);
                         if (null === $nextVal) {
                             // Detect short parameter shunt

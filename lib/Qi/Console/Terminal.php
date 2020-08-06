@@ -102,6 +102,7 @@ class Qi_Console_Terminal
             return false;
         }
         $this->_isatty = posix_isatty(STDOUT);
+        return $this->_isatty;
     }
 
     /**
