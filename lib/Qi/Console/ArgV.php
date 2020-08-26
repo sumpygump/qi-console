@@ -339,7 +339,7 @@ class Qi_Console_ArgV
             }
         }
 
-        $this->addHelp($helpName, $helpText);
+        $this->addHelp($helpName, $helpText, $type);
     }
 
     /**
@@ -389,12 +389,17 @@ class Qi_Console_ArgV
      *
      * @param string $name Argument name
      * @param string $helpText Help message
+     * @param string $type Type
      * @return mixed
      */
-    public function addHelp($name, $helpText)
+    public function addHelp($name, $helpText, $type='option')
     {
         if (!is_string($name)) {
             return false;
+        }
+
+        if ($type == 'parameter') {
+            $name .= ":";
         }
 
         $this->_help[$name] = $helpText;
