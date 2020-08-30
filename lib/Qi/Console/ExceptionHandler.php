@@ -66,7 +66,7 @@ class Qi_Console_ExceptionHandler
      * @param Exception $exception Exception object
      * @return void
      */
-    public function handleException(Exception $exception)
+    public function handleException(\Throwable $exception)
     {
         echo "\n";
         $this->_terminal->pretty_message($exception->getMessage(), 7, 1);
