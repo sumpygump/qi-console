@@ -17,6 +17,9 @@
     "require-dev": {
         "phpunit/phpunit": "7.5.*"
     },
+    "bin": [
+        "bin/tl"
+    ],
     "autoload": {
         "psr-0" : {
             "Qi_Console_" : "lib/"

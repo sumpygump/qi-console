@@ -127,13 +127,13 @@ class Qi_Console_TermLetters
             case "\\":
                 if (!$this->_useEscapeCodes) {
                     $len = $this->addChar($char);
-                    continue;
+                    continue 2;
                 }
 
                 // If this was the last letter, add it and move along
                 if ($i + 1 == $size) {
                     $this->addChar("\\");
-                    continue;
+                    continue 2;
                 }
 
                 $nextChar = $string[$i + 1];
@@ -144,7 +144,7 @@ class Qi_Console_TermLetters
                         $this->_color = $nextChar;
                     }
                     $i++;
-                    continue;
+                    continue 2;
                 }
 
                 switch ($nextChar) {

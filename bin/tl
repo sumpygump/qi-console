@@ -1,0 +1,51 @@
+#!/usr/bin/env php
+<?php
+// TODO: handle font files and custom fonts
+// TODO: Word wrap properly
+
+// Find where the composer autoload is
+// This tool was installed as a composed dependency or directly
+$root = realpath(dirname(__DIR__));
+$autoloadLocations = array(
+    __DIR__ . '/../../../autoload.php',
+    $root . DIRECTORY_SEPARATOR . 'vendor/autoload.php'
+);
+foreach ($autoloadLocations as $file) {
+    if (file_exists($file)) {
+        define('QI_COMPOSER_AUTOLOAD', $file);
+        break;
+    }
+}
+
+// Composer autoload require guard
+if (!defined('QI_COMPOSER_AUTOLOAD')) {
+    die(
+        "You must run the command `composer install` from the terminal "
+        . "in the directory '$root' before using this tool.\n"
+    );
+}
+
+// Load composer autoloader
+$autoload = require_once QI_COMPOSER_AUTOLOAD;
+
+$options = array(
+    'use_escape_codes' => true,
+);
+$tl = new Qi_Console_TermLetters($options);
+
+if (!isset($argv[1]) || $argv[1] == '-') {
+    // handle stdin
+    $f = fopen('php://stdin', 'r');
+    while ($line = fgets($f)) {
+       $tl->techo($line);
+    }
+    exit(0);
+} elseif (isset($argv[1])) {
+    // handle arguments
+    $tl->techo($argv[1]);
+    exit(0);
+} else {
+    // usage text
+    echo "Usage: tl <text>\n";
+    exit(1);
+}
