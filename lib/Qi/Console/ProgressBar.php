@@ -3,17 +3,17 @@
  * Progressbar class file
  *
  * Copyright (c) 2007 Stefan Walk
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- * 
+ *
  * @package Qi
  * @subpackage Console
  * @author Stefan Walk <et@php.net>
@@ -51,7 +51,7 @@ class Qi_Console_ProgressBar
      * @var string
      */
     protected $_bar;
-    
+
     /**
      * The width of the bar
      *
@@ -95,7 +95,7 @@ class Qi_Console_ProgressBar
     protected $_start_time = null;
 
     /**
-     * Rate datapoints 
+     * Rate datapoints
      *
      * @var array
      */
@@ -153,7 +153,7 @@ class Qi_Console_ProgressBar
      * - The second argument is the string that is going to fill the progress
      *   bar. In the above example, the string "=>" was used. If the string you
      *   pass is too short (like "=>" in this example), the leftmost character
-     *   is used to pad it to the needed size. If the string you pass is 
+     *   is used to pad it to the needed size. If the string you pass is
      *   too long, excessive characters are stripped from the left.
      * - The third argument is the string that fills the "empty" space in the
      *   progress bar. In the above example, that would be "-". If the string
@@ -161,7 +161,7 @@ class Qi_Console_ProgressBar
      *   character is used to pad it to the needed size. If the string you pass
      *   is too short, excessive characters are stripped from the right.
      * - The fourth argument specifies the width of the display. If the options
-     *   are left untouched, it will tell how many characters the display 
+     *   are left untouched, it will tell how many characters the display
      *   should use in total. If the "absolute_width" option is set to false,
      *   it tells how many characters the actual bar (that replaces the %bar%
      *   placeholder) should use.
@@ -247,9 +247,9 @@ class Qi_Console_ProgressBar
         }
         $this->_options = $options = $intopts;
         // placeholder
-        $cur = '%2$\''.$options['fraction_pad']{0}.strlen((int)$target_num).'.'
+        $cur = '%2$\''.$options['fraction_pad'][0].strlen((int)$target_num).'.'
                .$options['fraction_precision'].'f';
-        $max = $cur; $max{1} = 3;
+        $max = $cur; $max[1] = 3;
         // pre php-4.3.7 %3.2f meant 3 characters before . and two after
         // php-4.3.7 and later it means 3 characters for the whole number
         if (version_compare(PHP_VERSION, '4.3.7', 'ge')) {
@@ -257,7 +257,7 @@ class Qi_Console_ProgressBar
         } else {
             $padding = 3;
         }
-        $perc = '%4$\''.$options['percent_pad']{0}.$padding.'.'
+        $perc = '%4$\''.$options['percent_pad'][0].$padding.'.'
                 .$options['percent_precision'].'f';
 
         $transitions = array(
@@ -287,7 +287,7 @@ class Qi_Console_ProgressBar
             $blen = $width;
         }
 
-        $lbar = str_pad($bar, $blen, $bar{0}, STR_PAD_LEFT);
+        $lbar = str_pad($bar, $blen, $bar[0], STR_PAD_LEFT);
         $rbar = str_pad($prefill, $blen, substr($prefill, -1, 1));
 
         $this->_bar   = substr($lbar, -$blen) . substr($rbar, 0, $blen);
@@ -418,7 +418,7 @@ class Qi_Console_ProgressBar
 
     /**
      * Fetch time
-     * 
+     *
      * @return int
      */
     protected function _fetchTime()
@@ -434,7 +434,7 @@ class Qi_Console_ProgressBar
 
     /**
      * Add datapoint
-     * 
+     *
      * @param float $val The value (percent complete)
      * @param int $time The time
      * @return void
@@ -453,7 +453,7 @@ class Qi_Console_ProgressBar
 
     /**
      * Generate estimate of completion from datapoints
-     * 
+     *
      * @return float
      */
     protected function _generateEstimate()
