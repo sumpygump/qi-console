@@ -89,14 +89,14 @@ class Qi_Console_ArgV
 
     /**
      * Rules for parsing parameters
-     * 
+     *
      * @var array
      */
     protected $_rawRules = array();
 
     /**
      * Flag to indicate whether parsing has been done
-     * 
+     *
      * @var bool
      */
     protected $_hasParsed = false;
@@ -501,7 +501,7 @@ class Qi_Console_ArgV
 
     /**
      * Set a variable
-     * 
+     *
      * @param string $var Variable name
      * @param string $value Value
      * @return void
