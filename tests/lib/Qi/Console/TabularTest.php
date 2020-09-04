@@ -21,18 +21,9 @@ class Qi_Console_TabularTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->_createObject();
-    }
-
-    /**
-     * Tear down after each test
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
     }
 
     /**
@@ -82,11 +73,11 @@ class Qi_Console_TabularTest extends TestCase
     /**
      * Test constructor with data as an object
      *
-     * @expectedException Qi_Console_TabularException
      * @return void
      */
     public function testSetDataObject()
     {
+        $this->expectException(\Qi_Console_TabularException::class);
         $data = new StdClass();
 
         $data->row = array('I tried');

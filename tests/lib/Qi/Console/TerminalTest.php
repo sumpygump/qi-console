@@ -21,19 +21,10 @@ class Qi_Console_TerminalTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $_SERVER['TERM'] = 'cygwin';
         $this->_createObject();
-    }
-
-    /**
-     * Tear down after each test
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
     }
 
     /**
@@ -200,7 +191,7 @@ class Qi_Console_TerminalTest extends TestCase
 
         $expected = chr(27) . '[';
 
-        $this->assertContains($expected, $result);
+        $this->assertStringContainsString($expected, $result);
     }
 
     /**
@@ -217,7 +208,7 @@ class Qi_Console_TerminalTest extends TestCase
 
         $expected = chr(27) . '[';
 
-        $this->assertContains($expected, $result);
+        $this->assertStringContainsString($expected, $result);
     }
 
     /**
@@ -252,7 +243,7 @@ class Qi_Console_TerminalTest extends TestCase
 
         $expected = chr(27) . '[';
 
-        $this->assertContains($expected, $result);
+        $this->assertStringContainsString($expected, $result);
     }
 
     /**
@@ -269,7 +260,7 @@ class Qi_Console_TerminalTest extends TestCase
 
         $expected = chr(27) . '[';
 
-        $this->assertContains($expected, $result);
+        $this->assertStringContainsString($expected, $result);
     }
 
     /**
@@ -286,7 +277,7 @@ class Qi_Console_TerminalTest extends TestCase
 
         $expected = chr(27) . '[';
 
-        $this->assertContains($expected, $result);
+        $this->assertStringContainsString($expected, $result);
     }
 
     /**
@@ -302,7 +293,7 @@ class Qi_Console_TerminalTest extends TestCase
         ob_end_clean();
 
         $string = '                               series of bizarre';
-        $this->assertContains($string, $result);
+        $this->assertStringContainsString($string, $result);
     }
 
     /**
@@ -317,7 +308,7 @@ class Qi_Console_TerminalTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains(chr(27) . '[', $result);
+        $this->assertStringContainsString(chr(27) . '[', $result);
     }
 
     /**
@@ -335,11 +326,11 @@ class Qi_Console_TerminalTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains(chr(27) . '[', $result);
-        $this->assertContains('  better, but', $result);
+        $this->assertStringContainsString(chr(27) . '[', $result);
+        $this->assertStringContainsString('  better, but', $result);
 
         // There is a line break between `usually' and `better'
-        $this->assertNotContains(' usually better', $result);
+        $this->assertStringNotContainsString(' usually better', $result);
     }
 
     /**
@@ -356,8 +347,8 @@ class Qi_Console_TerminalTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains(chr(27) . '[', $result);
-        $this->assertContains('  This is', $result);
+        $this->assertStringContainsString(chr(27) . '[', $result);
+        $this->assertStringContainsString('  This is', $result);
     }
 
     /**
@@ -372,8 +363,8 @@ class Qi_Console_TerminalTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains(chr(27) . '[', $result);
-        $this->assertContains('lqqqqqqqqqqk', $result);
+        $this->assertStringContainsString(chr(27) . '[', $result);
+        $this->assertStringContainsString('lqqqqqqqqqqk', $result);
     }
 
     /**
@@ -397,7 +388,7 @@ class Qi_Console_TerminalTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertNotContains(chr(27) . '[', $result);
+        $this->assertStringNotContainsString(chr(27) . '[', $result);
         if (strpos($result, '|')) {
             $this->assertEquals(
                 '+----------+|          ||          ||          ||          '
@@ -425,7 +416,7 @@ class Qi_Console_TerminalTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains(chr(27) . '[', $result);
+        $this->assertStringContainsString(chr(27) . '[', $result);
     }
 
     /**
@@ -450,7 +441,7 @@ class Qi_Console_TerminalTest extends TestCase
     public function testDoCapability()
     {
         $result = $this->_object->do_capability('op');
-        $this->assertContains(chr(27) . '[', $result);
+        $this->assertStringContainsString(chr(27) . '[', $result);
     }
 
     /**
@@ -490,7 +481,7 @@ class Qi_Console_TerminalTest extends TestCase
     {
         $result = $this->_object->get_capability('op');
 
-        $this->assertContains('\\E[', $result);
+        $this->assertStringContainsString('\\E[', $result);
     }
 
     /**
@@ -502,7 +493,7 @@ class Qi_Console_TerminalTest extends TestCase
     {
         $result = $this->_object->get_capability('op', true);
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             "op : (orig_pair) Set default pair to its original value = '\E[",
             $result
         );
@@ -520,7 +511,7 @@ class Qi_Console_TerminalTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains('[am] => (', $result);
+        $this->assertStringContainsString('[am] => (', $result);
     }
 
     /**
@@ -538,6 +529,6 @@ class Qi_Console_TerminalTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains('op => 1B', $result);
+        $this->assertStringContainsString('op => 1B', $result);
     }
 }

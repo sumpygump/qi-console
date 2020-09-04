@@ -21,18 +21,9 @@ class Qi_Console_ArgVTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->_createObject('');
-    }
-
-    /**
-     * Tear down after each test
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
     }
 
     /**
@@ -235,11 +226,11 @@ class Qi_Console_ArgVTest extends TestCase
     /**
      * Test parsing a short parameter missing
      *
-     * @expectedException Qi_Console_ArgVException
      * @return void
      */
     public function testParseShortParameterMissing()
     {
+        $this->expectException(\Qi_Console_ArgVException::class);
         $rules = array(
             'p:' => 'password',
         );
@@ -459,11 +450,11 @@ class Qi_Console_ArgVTest extends TestCase
     /**
      * If a value is required
      *
-     * @expectedException Qi_Console_ArgVException
      * @return void
      */
     public function testParseLongParameterMissingValue()
     {
+        $this->expectException(\Qi_Console_ArgVException::class);
         $rules = array(
             'cctype:' => 'Card Type',
         );
@@ -774,11 +765,11 @@ class Qi_Console_ArgVTest extends TestCase
     /**
      * Missing value for argument --init
      *
-     * @expectedException Qi_Console_ArgVException
      * @return void
      */
     public function testParseWithMultitpleArgumentsRequiredMissing()
     {
+        $this->expectException(\Qi_Console_ArgVException::class);
         $rules = array(
             'verbose|v' => 'verbose messaging',
             'init|i:' => 'Initialization string',

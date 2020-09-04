@@ -62,7 +62,7 @@ class Qi_Console_ClientTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         // We need to fake an xterm Terminfo
         $terminfo = new Qi_Console_Terminfo(false, 'xterm');
@@ -84,7 +84,7 @@ class Qi_Console_ClientTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
     }
 
@@ -140,6 +140,6 @@ class Qi_Console_ClientTest extends TestCase
         ob_end_clean();
 
         $expected = "\033[37m\033[41m  There is something amiss  \033[39;49m";
-        $this->assertContains($expected, $result);
+        $this->assertStringContainsString($expected, $result);
     }
 }

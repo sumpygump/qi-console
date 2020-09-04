@@ -21,18 +21,9 @@ class Qi_Console_TerminfoTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->_createObject();
-    }
-
-    /**
-     * Tear down after each test
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
     }
 
     /**
@@ -71,7 +62,7 @@ class Qi_Console_TerminfoTest extends TestCase
         $expected = "op : (orig_pair) "
             . "Set default pair to its original value = '";
 
-        $this->assertContains($expected, $capabilityInfo);
+        $this->assertStringContainsString($expected, $capabilityInfo);
     }
 
     /**
@@ -158,7 +149,7 @@ class Qi_Console_TerminfoTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains('[am] => (', $result);
+        $this->assertStringContainsString('[am] => (', $result);
     }
 
     /**
@@ -178,7 +169,7 @@ class Qi_Console_TerminfoTest extends TestCase
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains('op => 1B', $result);
+        $this->assertStringContainsString('op => 1B', $result);
     }
 
     /**
@@ -192,7 +183,7 @@ class Qi_Console_TerminfoTest extends TestCase
 
         $expected = chr(27) . '[';
 
-        $this->assertContains($expected, $result);
+        $this->assertStringContainsString($expected, $result);
     }
 
     /**

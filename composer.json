@@ -15,7 +15,7 @@
         "php": ">=7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "7.5.*"
+        "phpunit/phpunit": "9.*"
     },
     "bin": [
         "bin/tl"

@@ -17,24 +17,6 @@ use PHPUnit\Framework\TestCase;
 class Qi_Console_StdTest extends TestCase
 {
     /**
-     * Setup before each test
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-    }
-
-    /**
-     * Tear down after each test
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-    }
-
-    /**
      * Test out method
      *
      * @return void
