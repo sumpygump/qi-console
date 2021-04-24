@@ -55,7 +55,7 @@ class TestingClient extends Qi_Console_Client
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_ClientTest extends TestCase
+class ClientTest extends TestCase
 {
     /**
      * Setup before each test

@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_ArgVTest extends TestCase
+class ArgVTest extends TestCase
 {
     /**
      * Setup before each test

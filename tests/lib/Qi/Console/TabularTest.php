@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_TabularTest extends TestCase
+class TabularTest extends TestCase
 {
     /**
      * Setup before each test

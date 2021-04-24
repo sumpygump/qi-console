@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_TerminalTest extends TestCase
+class TerminalTest extends TestCase
 {
     /**
      * Setup before each test

@@ -22,6 +22,11 @@
 class Qi_Console_Std
 {
     /**
+     * List of input strings to use for testing
+     */
+    public static $inputs = [];
+
+    /**
      * Get from stdin
      *
      * @param string $mode Php function to use to get input
@@ -30,9 +35,15 @@ class Qi_Console_Std
      */
     public static function in($mode = 'fgets', $response = null)
     {
-        if (strpos($_SERVER['SCRIPT_NAME'], 'phpunit')) {
-            return $response;
+
+        if (!posix_isatty(STDIN) || strpos($_SERVER['SCRIPT_NAME'], 'phpunit')) {
+            if ($response) {
+                return $response;
+            }
+
+            return array_shift(self::$inputs);
         }
+
         switch ($mode) {
         case "fgetc":
             return fgetc(STDIN);
