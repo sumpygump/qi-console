@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ArgV class file
  *
@@ -392,7 +393,7 @@ class Qi_Console_ArgV
      * @param string $type Type
      * @return mixed
      */
-    public function addHelp($name, $helpText, $type='option')
+    public function addHelp($name, $helpText, $type = 'option')
     {
         if (!is_string($name)) {
             return false;
@@ -541,7 +542,8 @@ class Qi_Console_ArgV
         $args = preg_split(
             "/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|"
             . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/",
-            trim($input), 0,
+            trim($input),
+            0,
             PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
         );
         return $args;

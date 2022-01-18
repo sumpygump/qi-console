@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Qi_Console_Client Test class file
  *
@@ -57,6 +58,8 @@ class TestingClient extends Qi_Console_Client
  */
 class ClientTest extends TestCase
 {
+    public $_object;
+
     /**
      * Setup before each test
      *

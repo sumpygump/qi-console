@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Progressbar class file
  *
@@ -122,11 +123,21 @@ class Qi_Console_ProgressBar
      * @see reset
      * @return void
      */
-    public function __construct($formatstring, $bar, $prefill,
-        $width, $target_num, $options = array())
-    {
+    public function __construct(
+        $formatstring,
+        $bar,
+        $prefill,
+        $width,
+        $target_num,
+        $options = array()
+    ) {
         $this->reset(
-            $formatstring, $bar, $prefill, $width, $target_num, $options
+            $formatstring,
+            $bar,
+            $prefill,
+            $width,
+            $target_num,
+            $options
         );
     }
 
@@ -211,9 +222,14 @@ class Qi_Console_ProgressBar
      * @param array $options Options for the progress bar
      * @return bool
      */
-    public function reset($formatstring, $bar, $prefill,
-        $width, $target_num, $options = array())
-    {
+    public function reset(
+        $formatstring,
+        $bar,
+        $prefill,
+        $width,
+        $target_num,
+        $options = array()
+    ) {
         if ($target_num == 0) {
             trigger_error(
                 "Qi_Console_ProgressBar: Using a target number "
@@ -247,9 +263,10 @@ class Qi_Console_ProgressBar
         }
         $this->_options = $options = $intopts;
         // placeholder
-        $cur = '%2$\''.$options['fraction_pad'][0].strlen((int)$target_num).'.'
-               .$options['fraction_precision'].'f';
-        $max = $cur; $max[1] = 3;
+        $cur = '%2$\'' . $options['fraction_pad'][0] . strlen((int)$target_num) . '.'
+               . $options['fraction_precision'] . 'f';
+        $max = $cur;
+        $max[1] = 3;
         // pre php-4.3.7 %3.2f meant 3 characters before . and two after
         // php-4.3.7 and later it means 3 characters for the whole number
         if (version_compare(PHP_VERSION, '4.3.7', 'ge')) {
@@ -257,8 +274,8 @@ class Qi_Console_ProgressBar
         } else {
             $padding = 3;
         }
-        $perc = '%4$\''.$options['percent_pad'][0].$padding.'.'
-                .$options['percent_precision'].'f';
+        $perc = '%4$\'' . $options['percent_pad'][0] . $padding . '.'
+                . $options['percent_precision'] . 'f';
 
         $transitions = array(
             '%%'         => '%%',
@@ -275,7 +292,13 @@ class Qi_Console_ProgressBar
 
         $slen = strlen(
             sprintf(
-                $this->_skeleton, '', 0, 0, 0, '00:00:00', '00:00:00'
+                $this->_skeleton,
+                '',
+                0,
+                0,
+                0,
+                '00:00:00',
+                '00:00:00'
             )
         );
 
@@ -321,7 +344,8 @@ class Qi_Console_ProgressBar
         }
 
         $minDrawInterval = $this->_options['min_draw_interval'];
-        if ($time - $this->_last_update_time < $minDrawInterval
+        if (
+            $time - $this->_last_update_time < $minDrawInterval
             && $current != $this->_target_num
         ) {
             return;
@@ -352,8 +376,12 @@ class Qi_Console_ProgressBar
 
         $this->_rlen = printf(
             $this->_skeleton,
-            $visbar, $current, $this->_target_num,
-            $percent * 100, $elapsed, $estimate
+            $visbar,
+            $current,
+            $this->_target_num,
+            $percent * 100,
+            $elapsed,
+            $estimate
         );
 
         if (is_null($this->_rlen)) {
@@ -399,7 +427,7 @@ class Qi_Console_ProgressBar
      */
     protected function _formatSeconds($seconds)
     {
-        $hou = floor($seconds/3600);
+        $hou = floor($seconds / 3600);
         $min = floor(($seconds - $hou * 3600) / 60);
         $sec = $seconds - $hou * 3600 - $min * 60;
         if ($hou == 0) {

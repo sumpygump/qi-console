@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Qi Console Tabular test class file
  *
@@ -16,6 +17,8 @@ use PHPUnit\Framework\TestCase;
  */
 class TabularTest extends TestCase
 {
+    public $object;
+
     /**
      * Setup before each test
      *
@@ -23,7 +26,7 @@ class TabularTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->_createObject();
+        $this->createObject();
     }
 
     /**
@@ -31,9 +34,9 @@ class TabularTest extends TestCase
      *
      * @return void
      */
-    protected function _createObject()
+    protected function createObject()
     {
-        $this->_object = new Qi_Console_Tabular();
+        $this->object = new Qi_Console_Tabular();
     }
 
     /**
@@ -43,12 +46,12 @@ class TabularTest extends TestCase
      */
     public function testConstructorNoArguments()
     {
-        $this->_object = new Qi_Console_Tabular();
+        $this->object = new Qi_Console_Tabular();
 
-        $this->assertTrue(is_object($this->_object));
+        $this->assertTrue(is_object($this->object));
 
-        $this->assertEquals(null, $this->_object->display(true));
-        $this->assertEquals(array(), $this->_object->getData());
+        $this->assertEquals(null, $this->object->display(true));
+        $this->assertEquals(array(), $this->object->getData());
     }
 
     /**
@@ -59,13 +62,13 @@ class TabularTest extends TestCase
     public function testSetDataString()
     {
         $data = 'this is a table';
-        $this->_object->setData($data);
+        $this->object->setData($data);
 
         $expected = "+-------------------+\n"
             . "|  this is a table  |\n"
             . "+-------------------+\n";
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
 
         $this->assertEquals($expected, $result);
     }
@@ -82,9 +85,9 @@ class TabularTest extends TestCase
 
         $data->row = array('I tried');
 
-        $this->_object->setData($data);
+        $this->object->setData($data);
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
     }
 
     /**
@@ -96,8 +99,8 @@ class TabularTest extends TestCase
     {
         $data = 100;
 
-        $this->_object->setData($data);
-        $result = $this->_object->display(true);
+        $this->object->setData($data);
+        $result = $this->object->display(true);
 
         $expected = "+-------+\n"
             . "|  100  |\n"
@@ -122,7 +125,7 @@ class TabularTest extends TestCase
             'incorrect'   => false,
         );
 
-        $this->_object = new Qi_Console_Tabular($data, $options);
+        $this->object = new Qi_Console_Tabular($data, $options);
 
         $expected = "+-----------+\n"
             . "|  heading  |\n"
@@ -130,7 +133,7 @@ class TabularTest extends TestCase
             . "|  101      |\n"
             . "+-----------+\n";
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
 
         $this->assertEquals($expected, $result);
     }
@@ -148,11 +151,11 @@ class TabularTest extends TestCase
             'border'   => false,
         );
 
-        $this->_object = new Qi_Console_Tabular($data, $options);
+        $this->object = new Qi_Console_Tabular($data, $options);
 
         $expected = "101\n";
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
 
         $this->assertEquals($expected, $result);
     }
@@ -171,7 +174,7 @@ class TabularTest extends TestCase
             'margin'   => 5,
         );
 
-        $this->_object = new Qi_Console_Tabular($data, $options);
+        $this->object = new Qi_Console_Tabular($data, $options);
 
         $expected = "     +-----------+\n"
             . "     |  heading  |\n"
@@ -179,7 +182,7 @@ class TabularTest extends TestCase
             . "     |  101      |\n"
             . "     +-----------+\n";
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
 
         $this->assertEquals($expected, $result);
     }
@@ -198,7 +201,7 @@ class TabularTest extends TestCase
             'cellalign' => 'right',
         );
 
-        $this->_object = new Qi_Console_Tabular($data, $options);
+        $this->object = new Qi_Console_Tabular($data, $options);
 
         $expected = "+-----------+\n"
             . "|  heading  |\n"
@@ -206,7 +209,7 @@ class TabularTest extends TestCase
             . "|      101  |\n"
             . "+-----------+\n";
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
 
         $this->assertEquals($expected, $result);
     }
@@ -225,7 +228,7 @@ class TabularTest extends TestCase
             'cellalign' => 'right',
         );
 
-        $this->_object = new Qi_Console_Tabular($data, $options);
+        $this->object = new Qi_Console_Tabular($data, $options);
 
         $expected = "+-----------+\n"
             . "|  heading  |\n"
@@ -234,7 +237,7 @@ class TabularTest extends TestCase
             . "+-----------+\n";
 
         ob_start();
-        $this->_object->display();
+        $this->object->display();
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -252,8 +255,8 @@ class TabularTest extends TestCase
             array( 'Aartha', 'aartha@example.com', '42'),
         );
 
-        $this->_object->setData($data);
-        $this->_object->setHeaders(array('name', 'email', 'age'));
+        $this->object->setData($data);
+        $this->object->setHeaders(array('name', 'email', 'age'));
 
         $expected = "+-----------------------------------------+\n"
             . "|  name    |  email               |  age  |\n"
@@ -261,7 +264,7 @@ class TabularTest extends TestCase
             . "|  Aartha  |  aartha@example.com  |  42   |\n"
             . "+-----------------------------------------+\n";
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
         $this->assertEquals($expected, $result);
     }
 
@@ -282,13 +285,13 @@ class TabularTest extends TestCase
             'border'   => false,
         );
 
-        $this->_object = new Qi_Console_Tabular($data, $options);
+        $this->object = new Qi_Console_Tabular($data, $options);
 
         $expected = "name    email               age\n"
             . "Aartha  aartha@example.com  42 \n"
             . "Bea     bea@example.com     68 \n";
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
         $this->assertEquals($expected, $result);
     }
 
@@ -309,7 +312,7 @@ class TabularTest extends TestCase
             'cellalign' => array('', 'right', 'R'),
         );
 
-        $this->_object = new Qi_Console_Tabular($data, $options);
+        $this->object = new Qi_Console_Tabular($data, $options);
 
         $expected = "+-----------------------------------------+\n"
             . "|  name    |  email               |  age  |\n"
@@ -318,7 +321,30 @@ class TabularTest extends TestCase
             . "|  James   |               j@c.c  |   28  |\n"
             . "+-----------------------------------------+\n";
 
-        $result = $this->_object->display(true);
+        $result = $this->object->display(true);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testWithNull()
+    {
+        $data = [
+            [null, 'a', 'b'],
+        ];
+
+        $options = [
+            'headers' => ['name', 'email', 'age'],
+        ];
+
+        $this->object = new Qi_Console_Tabular($data, $options);
+
+        $expected = "+--------------------------+\n"
+            . "|  name  |  email  |  age  |\n"
+            . "+--------------------------+\n"
+            . "|        |  a      |  b    |\n"
+            . "+--------------------------+\n";
+
+        $result = $this->object->display(true);
 
         $this->assertEquals($expected, $result);
     }

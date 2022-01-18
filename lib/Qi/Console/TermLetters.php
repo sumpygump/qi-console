@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Term Letters class file
  *
@@ -7,8 +8,8 @@
  */
 
 /**
- * TermLetters 
- * 
+ * TermLetters
+ *
  * @package Qi
  * @subpackage Console
  * @author Jansen Price <jansen.price@gmail.com>
@@ -25,56 +26,56 @@ class Qi_Console_TermLetters
 
     /**
      * Color of text
-     * 
+     *
      * @var int
      */
     protected $_color = 2;
 
     /**
      * Default color
-     * 
+     *
      * @var int
      */
     protected $_defaultColor = 2;
 
     /**
      * Whether to consider escape codes when parsing text
-     * 
+     *
      * @var bool
      */
     protected $_useEscapeCodes = true;
 
     /**
      * Buffer for lines of the letters
-     * 
+     *
      * @var array
      */
     protected $_lineBuffer = array();
 
     /**
      * Length of the buffer
-     * 
+     *
      * @var int
      */
     protected $_bufferLen = 0;
 
     /**
      * Specified width in chars of printable area
-     * 
+     *
      * @var float
      */
     protected $_width = 180;
 
     /**
      * Enable auto wrap of long lines
-     * 
+     *
      * @var mixed
      */
     protected $_enableWrap = true;
 
     /**
      * Constructor
-     * 
+     *
      * @param array $options Additional options
      * @return void
      */
@@ -109,7 +110,7 @@ class Qi_Console_TermLetters
 
     /**
      * Echo a termlet phrase
-     * 
+     *
      * @param string $string String to convert to letters
      * @return void
      */
@@ -121,48 +122,48 @@ class Qi_Console_TermLetters
         for ($i = 0; $i < $size; $i++) {
             $char = $string[$i];
             switch ($char) {
-            case "\n":
-                $this->_echoBuffer();
-                break;
-            case "\\":
-                if (!$this->_useEscapeCodes) {
-                    $len = $this->addChar($char);
-                    continue 2;
-                }
-
-                // If this was the last letter, add it and move along
-                if ($i + 1 == $size) {
-                    $this->addChar("\\");
-                    continue 2;
-                }
-
-                $nextChar = $string[$i + 1];
-                if (preg_match("/[0-8]/", $nextChar)) {
-                    if ($nextChar == 0) {
-                        $this->_color = $this->_defaultColor;
-                    } else {
-                        $this->_color = $nextChar;
-                    }
-                    $i++;
-                    continue 2;
-                }
-
-                switch ($nextChar) {
-                case "n":
+                case "\n":
                     $this->_echoBuffer();
-                    $i++;
                     break;
                 case "\\":
-                    $i++;
-                    // fall through
-                default:
-                    $this->addChar("\\");
+                    if (!$this->_useEscapeCodes) {
+                        $len = $this->addChar($char);
+                        continue 2;
+                    }
+
+                    // If this was the last letter, add it and move along
+                    if ($i + 1 == $size) {
+                        $this->addChar("\\");
+                        continue 2;
+                    }
+
+                    $nextChar = $string[$i + 1];
+                    if (preg_match("/[0-8]/", $nextChar)) {
+                        if ($nextChar == 0) {
+                            $this->_color = $this->_defaultColor;
+                        } else {
+                            $this->_color = $nextChar;
+                        }
+                        $i++;
+                        continue 2;
+                    }
+
+                    switch ($nextChar) {
+                        case "n":
+                            $this->_echoBuffer();
+                            $i++;
+                            break;
+                        case "\\":
+                            $i++;
+                            // fall through
+                        default:
+                            $this->addChar("\\");
+                            break;
+                    }
                     break;
-                }
-                break;
-            default:
-                $len = $this->addChar($char);
-                break;
+                default:
+                    $len = $this->addChar($char);
+                    break;
             }
         }
 
@@ -171,7 +172,7 @@ class Qi_Console_TermLetters
 
     /**
      * Echo the current buffer
-     * 
+     *
      * @return void
      */
     protected function _echoBuffer()
@@ -184,7 +185,7 @@ class Qi_Console_TermLetters
 
     /**
      * Reset the line buffer
-     * 
+     *
      * @return void
      */
     protected function _resetLineBuffer()
@@ -195,7 +196,7 @@ class Qi_Console_TermLetters
 
     /**
      * Add a char to the buffer
-     * 
+     *
      * @param string $char Character to add
      * @return int The new buffer length
      */
@@ -212,11 +213,12 @@ class Qi_Console_TermLetters
         $letterAndBufferWidth = $this->getLetterWidth($char)
             + $this->_bufferLen + 1;
 
-        if ($this->_enableWrap
+        if (
+            $this->_enableWrap
             && $letterAndBufferWidth > $this->_width
         ) {
             $this->_echoBuffer();
-        } 
+        }
 
         $l = 0;
         foreach ($lines as $line) {
@@ -224,7 +226,7 @@ class Qi_Console_TermLetters
             $l++;
         }
 
-        // Add the width of this char to the buffer len (include the space 
+        // Add the width of this char to the buffer len (include the space
         // in between the chars
         $this->_bufferLen = $this->_bufferLen
             + $this->getLetterWidth($char) + 1;
@@ -235,8 +237,8 @@ class Qi_Console_TermLetters
     /**
      * Add string to a specific line buffer
      *
-     * Each line buffer represents a line of text. Each line is stored in the 
-     * array so that strings representing the letter shapes can be added to a 
+     * Each line buffer represents a line of text. Each line is stored in the
+     * array so that strings representing the letter shapes can be added to a
      * line independently until the buffer needs to be flushed (echoed)
      *
      * E.g.
@@ -245,7 +247,7 @@ class Qi_Console_TermLetters
      *  Line 3: XXXX   X
      *  Line 4: X  X   X
      *  Line 5: X  X XXXXX
-     * 
+     *
      * @param int $index Index of line buffer
      * @param string $text String to append to that buffer
      * @return int Length of buffer
@@ -264,7 +266,7 @@ class Qi_Console_TermLetters
 
     /**
      * Get the letter width for a given letter
-     * 
+     *
      * @param string $letter Letter (one character)
      * @return int
      */
@@ -281,7 +283,7 @@ class Qi_Console_TermLetters
 
     /**
      * Generate a letter shape
-     * 
+     *
      * @param string $letter Character to generate
      * @return string
      */
@@ -300,36 +302,36 @@ class Qi_Console_TermLetters
 
         foreach ($letter_data as $char) {
             switch ($char) {
-            case ' ':
-                $out .= $this->_terminal->do_op();
-                $out .= " ";
-                break;
-            case 'X':
-                $out .= $this->_terminal->do_setab($this->_color);
-                $out .= " ";
-                break;
-            case '\'':
-                $out .= $this->_terminal->do_setaf($this->_color);
-                $out .= $this->uchr(9600);
-                break;
-            case ',':
-                $out .= $this->_terminal->do_setaf($this->_color);
-                $out .= $this->uchr(9604);
-                break;
-            case '#':
-                $out .= $this->_terminal->do_setaf($this->_color);
-                $out .= $this->uchr(9608);
-                break;
-            case '-':
-                $out .= $this->_terminal->do_setaf($this->_color);
-                $out .= $this->uchr(9642);
-                break;
-            case "\n":
-                $out .= $this->_terminal->do_op();
-                $out .= "\n";
-                break;
-            default:
-                break;
+                case ' ':
+                    $out .= $this->_terminal->do_op();
+                    $out .= " ";
+                    break;
+                case 'X':
+                    $out .= $this->_terminal->do_setab($this->_color);
+                    $out .= " ";
+                    break;
+                case '\'':
+                    $out .= $this->_terminal->do_setaf($this->_color);
+                    $out .= $this->uchr(9600);
+                    break;
+                case ',':
+                    $out .= $this->_terminal->do_setaf($this->_color);
+                    $out .= $this->uchr(9604);
+                    break;
+                case '#':
+                    $out .= $this->_terminal->do_setaf($this->_color);
+                    $out .= $this->uchr(9608);
+                    break;
+                case '-':
+                    $out .= $this->_terminal->do_setaf($this->_color);
+                    $out .= $this->uchr(9642);
+                    break;
+                case "\n":
+                    $out .= $this->_terminal->do_op();
+                    $out .= "\n";
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -342,7 +344,7 @@ class Qi_Console_TermLetters
      * Get a character given a unicode char code
      *
      * It's a unicode version of chr()
-     * 
+     *
      * @param int $codes One or more codes
      * @return string
      */
@@ -355,7 +357,9 @@ class Qi_Console_TermLetters
         $str = '';
         foreach ($codes as $code) {
             $str .= html_entity_decode(
-                '&#' . $code . ';', ENT_NOQUOTES, 'UTF-8'
+                '&#' . $code . ';',
+                ENT_NOQUOTES,
+                'UTF-8'
             );
         }
 
@@ -364,8 +368,8 @@ class Qi_Console_TermLetters
 
     /**
      * Definition of default letters set
-     * 
-     * Uses the following characters to represent the blocks that define each 
+     *
+     * Uses the following characters to represent the blocks that define each
      * character: ' , #
      *
      * !"#$%&'()*+,-./0123456789:;<=>?@
@@ -383,8 +387,8 @@ class Qi_Console_TermLetters
         "%" => "     \n,   ,\n  ,' \n,'  ,\n     ",
         "&" => " ,   \n','  \n# ',,\n',,',\n     ",
         "'" => " , \n ' \n   \n   \n   ",
-        "(" => " ,'\n#  \n#  \n', \n  '", 
-        ")" => "', \n  #\n  #\n ,'\n'  ", 
+        "(" => " ,'\n#  \n#  \n', \n  '",
+        ")" => "', \n  #\n  #\n ,'\n'  ",
         "*" => "  ,  \n',#,'\n'###'\n' # '\n     ",
         "+" => "     \n  #  \n''#''\n  '  \n     ",
         "," => "  \n  \n  \n##\n,'",

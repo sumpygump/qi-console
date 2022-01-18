@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Qi Console Terminal Test Class file
  *
@@ -16,6 +17,8 @@ use PHPUnit\Framework\TestCase;
  */
 class TerminalTest extends TestCase
 {
+    public $object;
+
     /**
      * Setup before each test
      *
@@ -24,7 +27,7 @@ class TerminalTest extends TestCase
     public function setUp(): void
     {
         $_SERVER['TERM'] = 'cygwin';
-        $this->_createObject();
+        $this->createObject();
     }
 
     /**
@@ -32,7 +35,7 @@ class TerminalTest extends TestCase
      *
      * @return void
      */
-    protected function _createObject()
+    protected function createObject()
     {
         $terminfo = new Qi_Console_Terminfo(false, 'xterm');
 
@@ -40,8 +43,8 @@ class TerminalTest extends TestCase
             'terminfo' => $terminfo,
         );
 
-        $this->_object = new Qi_Console_Terminal($options);
-        $this->_object->setIsatty(true);
+        $this->object = new Qi_Console_Terminal($options);
+        $this->object->setIsatty(true);
     }
 
     /**
@@ -51,9 +54,9 @@ class TerminalTest extends TestCase
      */
     public function testConstructor()
     {
-        $this->_object = new Qi_Console_Terminal();
+        $this->object = new Qi_Console_Terminal();
 
-        $this->assertTrue(is_object($this->_object));
+        $this->assertTrue(is_object($this->object));
     }
 
     /**
@@ -69,10 +72,10 @@ class TerminalTest extends TestCase
             'terminfo' => $terminfo,
         );
 
-        $this->_object = new Qi_Console_Terminal($options);
+        $this->object = new Qi_Console_Terminal($options);
 
-        $this->assertTrue(is_object($this->_object));
-        $this->assertInstanceOf('Qi_Console_Terminal', $this->_object);
+        $this->assertTrue(is_object($this->object));
+        $this->assertInstanceOf('Qi_Console_Terminal', $this->object);
     }
 
     /**
@@ -84,11 +87,11 @@ class TerminalTest extends TestCase
     {
         $_SERVER['TERM'] = 'cygwin';
 
-        $this->_object = new Qi_Console_Terminal();
+        $this->object = new Qi_Console_Terminal();
 
-        $this->assertTrue(is_object($this->_object));
-        $this->assertTrue($this->_object->isCygwin());
-        $this->assertTrue($this->_object->isatty());
+        $this->assertTrue(is_object($this->object));
+        $this->assertTrue($this->object->isCygwin());
+        $this->assertTrue($this->object->isatty());
     }
 
     /**
@@ -99,10 +102,10 @@ class TerminalTest extends TestCase
     public function testIsAtty()
     {
         $_SERVER['TERM'] = 'x';
-        $this->_object = new Qi_Console_Terminal();
+        $this->object = new Qi_Console_Terminal();
 
-        $this->assertTrue(is_object($this->_object));
-        $this->assertFalse($this->_object->isCygwin());
+        $this->assertTrue(is_object($this->object));
+        $this->assertFalse($this->object->isCygwin());
     }
 
     /**
@@ -112,8 +115,8 @@ class TerminalTest extends TestCase
      */
     public function testSetIsattyFalse()
     {
-        $this->_object->setIsatty(false);
-        $this->assertFalse($this->_object->isatty());
+        $this->object->setIsatty(false);
+        $this->assertFalse($this->object->isatty());
     }
 
     /**
@@ -123,14 +126,14 @@ class TerminalTest extends TestCase
      */
     public function testSetIsattyNull()
     {
-        $this->_object->setIsatty();
+        $this->object->setIsatty();
 
         // Since phpunit can be invoked differently, we want to make sure that
         // passing in null will match whatever posix_isatty says about STDOUT
         if (posix_isatty(STDOUT)) {
-            $this->assertTrue($this->_object->isatty());
+            $this->assertTrue($this->object->isatty());
         } else {
-            $this->assertTrue($this->_object->isatty());
+            $this->assertTrue($this->object->isatty());
         }
     }
 
@@ -143,16 +146,16 @@ class TerminalTest extends TestCase
     {
         unset($_SERVER['TERM']);
 
-        $this->_object = new Qi_Console_Terminal();
+        $this->object = new Qi_Console_Terminal();
 
-        $this->_object->setIsatty();
+        $this->object->setIsatty();
 
         // Since phpunit can be invoked differently, we want to make sure that
         // passing in null will match whatever posix_isatty says about STDOUT
         if (posix_isatty(STDOUT)) {
-            $this->assertTrue($this->_object->isatty());
+            $this->assertTrue($this->object->isatty());
         } else {
-            $this->assertFalse($this->_object->isatty());
+            $this->assertFalse($this->object->isatty());
         }
     }
 
@@ -163,10 +166,10 @@ class TerminalTest extends TestCase
      */
     public function testPrintTerm()
     {
-        $this->_object->setIsatty(true);
+        $this->object->setIsatty(true);
 
         ob_start();
-        $this->_object->printterm('hi there');
+        $this->object->printterm('hi there');
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -182,10 +185,10 @@ class TerminalTest extends TestCase
      */
     public function testClear()
     {
-        $this->_object->setIsatty(true);
+        $this->object->setIsatty(true);
 
         ob_start();
-        $this->_object->clear();
+        $this->object->clear();
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -202,7 +205,7 @@ class TerminalTest extends TestCase
     public function testLocate()
     {
         ob_start();
-        $this->_object->locate(1, 1);
+        $this->object->locate(1, 1);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -222,11 +225,11 @@ class TerminalTest extends TestCase
     public function testLocateInvalidParameters()
     {
         ob_start();
-        $object = $this->_object->locate(new StdClass(), 'a');
+        $object = $this->object->locate(new StdClass(), 'a');
         $result = ob_get_contents();
         ob_end_clean();
 
-        $this->assertEquals($object, $this->_object);
+        $this->assertEquals($object, $this->object);
     }
 
     /**
@@ -237,7 +240,7 @@ class TerminalTest extends TestCase
     public function testBoldType()
     {
         ob_start();
-        $this->_object->bold_type();
+        $this->object->bold_type();
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -254,7 +257,7 @@ class TerminalTest extends TestCase
     public function testFgColor()
     {
         ob_start();
-        $this->_object->set_fgcolor(1);
+        $this->object->set_fgcolor(1);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -271,7 +274,7 @@ class TerminalTest extends TestCase
     public function testBgColor()
     {
         ob_start();
-        $this->_object->set_bgcolor(1);
+        $this->object->set_bgcolor(1);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -288,7 +291,7 @@ class TerminalTest extends TestCase
     public function testCenterText()
     {
         ob_start();
-        $this->_object->center_text('series of bizarre');
+        $this->object->center_text('series of bizarre');
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -304,7 +307,7 @@ class TerminalTest extends TestCase
     public function testPrettyMessage()
     {
         ob_start();
-        $this->_object->pretty_message('salmon dip');
+        $this->object->pretty_message('salmon dip');
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -322,7 +325,7 @@ class TerminalTest extends TestCase
             . 'that are longer are usually better, but you know, life.';
 
         ob_start();
-        $this->_object->pretty_message($message, 7, 4, 80);
+        $this->object->pretty_message($message, 7, 4, 80);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -343,7 +346,7 @@ class TerminalTest extends TestCase
         $message = 'This is a test message.';
 
         ob_start();
-        $this->_object->pretty_message($message, 7, 4, null, false);
+        $this->object->pretty_message($message, 7, 4, null, false);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -359,7 +362,7 @@ class TerminalTest extends TestCase
     public function testMakeBox()
     {
         ob_start();
-        $this->_object->make_box(5, 5, 10, 10);
+        $this->object->make_box(5, 5, 10, 10);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -380,11 +383,11 @@ class TerminalTest extends TestCase
             'terminfo' => $terminfo,
         );
 
-        $this->_object = new Qi_Console_Terminal($options);
-        $this->_object->setIsatty(false);
+        $this->object = new Qi_Console_Terminal($options);
+        $this->object->setIsatty(false);
 
         ob_start();
-        $this->_object->make_box(5, 5, 10, 10);
+        $this->object->make_box(5, 5, 10, 10);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -393,13 +396,15 @@ class TerminalTest extends TestCase
             $this->assertEquals(
                 '+----------+|          ||          ||          ||          '
                 . '||          ||          ||          ||          ||          '
-                . '|+----------+', $result
+                . '|+----------+',
+                $result
             );
         } else {
             $this->assertEquals(
                 'lqqqqqqqqqqkx          xx          xx          xx          '
                 . 'xx          xx          xx          xx          xx          '
-                . 'xmqqqqqqqqqqj', $result
+                . 'xmqqqqqqqqqqj',
+                $result
             );
         }
     }
@@ -412,7 +417,7 @@ class TerminalTest extends TestCase
     public function testMagicCallWithEcho()
     {
         ob_start();
-        $this->_object->op();
+        $this->object->op();
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -426,9 +431,9 @@ class TerminalTest extends TestCase
      */
     public function testMagicCallWithNoTty()
     {
-        $this->_object->setIsatty(false);
+        $this->object->setIsatty(false);
 
-        $result = $this->_object->do_op();
+        $result = $this->object->do_op();
 
         $this->assertEquals('', $result);
     }
@@ -440,7 +445,7 @@ class TerminalTest extends TestCase
      */
     public function testDoCapability()
     {
-        $result = $this->_object->do_capability('op');
+        $result = $this->object->do_capability('op');
         $this->assertStringContainsString(chr(27) . '[', $result);
     }
 
@@ -452,7 +457,7 @@ class TerminalTest extends TestCase
     public function testDoCapabilityForInvalidCapability()
     {
         ob_start();
-        $this->_object->do_capability('xxxxx');
+        $this->object->do_capability('xxxxx');
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -466,8 +471,8 @@ class TerminalTest extends TestCase
      */
     public function testDoCapabilityWithNotTtty()
     {
-        $this->_object->setIsatty(false);
-        $result = $this->_object->do_capability('op');
+        $this->object->setIsatty(false);
+        $result = $this->object->do_capability('op');
 
         $this->assertEquals('', $result);
     }
@@ -479,7 +484,7 @@ class TerminalTest extends TestCase
      */
     public function testGetCapability()
     {
-        $result = $this->_object->get_capability('op');
+        $result = $this->object->get_capability('op');
 
         $this->assertStringContainsString('\\E[', $result);
     }
@@ -491,7 +496,7 @@ class TerminalTest extends TestCase
      */
     public function testGetCapabilityVerbose()
     {
-        $result = $this->_object->get_capability('op', true);
+        $result = $this->object->get_capability('op', true);
 
         $this->assertStringContainsString(
             "op : (orig_pair) Set default pair to its original value = '\E[",
@@ -507,7 +512,7 @@ class TerminalTest extends TestCase
     public function testDumpCaps()
     {
         ob_start();
-        $this->_object->dump();
+        $this->object->dump();
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -522,10 +527,10 @@ class TerminalTest extends TestCase
     public function testDumpCache()
     {
         // Run a cap so the cache gets populated with something
-        $this->_object->do_op();
+        $this->object->do_op();
 
         ob_start();
-        $this->_object->dumpCache();
+        $this->object->dumpCache();
         $result = ob_get_contents();
         ob_end_clean();
 

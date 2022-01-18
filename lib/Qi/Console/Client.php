@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Console Client class file 
+ * Console Client class file
  *
  * @package Qi
  * @subpackage Console
@@ -8,7 +9,7 @@
 
 /**
  * Console Client class
- * 
+ *
  * @package Qi
  * @subpackage Console
  * @author Jansen Price <jansen.price@gmail.com>
@@ -18,14 +19,14 @@ class Qi_Console_Client
 {
     /**
      * Run time arguments
-     * 
+     *
      * @var string
      */
     protected $_args = '';
 
     /**
      * Terminal
-     * 
+     *
      * @var mixed
      */
     protected $_terminal;
@@ -39,14 +40,15 @@ class Qi_Console_Client
 
     /**
      * Constructor
-     * 
+     *
      * @param Qi_Console_ArgV $args Args object
      * @param Qi_Console_Terminal $terminal Terminal object
      * @return void
      */
-    public function __construct(Qi_Console_ArgV $args,
-        Qi_Console_Terminal $terminal)
-    {
+    public function __construct(
+        Qi_Console_ArgV $args,
+        Qi_Console_Terminal $terminal
+    ) {
         $this->_args = $args;
 
         $this->_terminal = $terminal;
@@ -56,7 +58,7 @@ class Qi_Console_Client
 
     /**
      * Method to be overwritten in the extending class
-     * 
+     *
      * @return void
      */
     public function init()
@@ -83,9 +85,11 @@ class Qi_Console_Client
      * @param int $color Color to use
      * @return void
      */
-    protected function _displayMessage($message, $ensureNewline = true,
-        $color = 2)
-    {
+    protected function _displayMessage(
+        $message,
+        $ensureNewline = true,
+        $color = 2
+    ) {
         if ($ensureNewline && substr($message, -1) != "\n") {
             $message .= "\n";
         }
@@ -122,7 +126,7 @@ class Qi_Console_Client
 
     /**
      * Exit program safely
-     * 
+     *
      * @param int $status Exit status
      * @return void
      */
@@ -139,7 +143,7 @@ class Qi_Console_Client
      * Reset tty mode
      *
      * If not windows, revert back to a sane tty
-     * 
+     *
      * @return void
      */
     protected function _resetTty()

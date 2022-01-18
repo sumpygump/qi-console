@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Qi_Console_ArgV Test class file
  *
@@ -16,6 +17,8 @@ use PHPUnit\Framework\TestCase;
  */
 class ArgVTest extends TestCase
 {
+    public $_object;
+
     /**
      * Setup before each test
      *

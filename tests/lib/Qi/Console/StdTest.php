@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Qi_Console_Std Test class file
  *

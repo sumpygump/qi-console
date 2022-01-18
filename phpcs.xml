@@ -1,0 +1,11 @@
+<?xml version ="1.0"?>
+<ruleset>
+    <!-- Scan everything -->
+    <file>.</file>
+
+    <!-- Exclude the composer vendor directory. -->
+    <exclude-pattern>/vendor/*</exclude-pattern>
+
+    <!-- Use standard PSR12 -->
+    <rule ref="PSR12" />
+</ruleset>

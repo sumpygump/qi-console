@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Console Terminal class file
  *
@@ -52,7 +53,8 @@ class Qi_Console_Terminal
      */
     public function __construct($options = array())
     {
-        if (isset($_SERVER['TERM'])
+        if (
+            isset($_SERVER['TERM'])
             && strpos($_SERVER['TERM'], 'cygwin') !== false
         ) {
             $this->_isCygwin = true;
@@ -243,7 +245,7 @@ class Qi_Console_Terminal
                 $this->_columns = $this->_terminfo->getCapability('cols');
             }
             return $this->_columns;
-        } 
+        }
 
         // TODO: if windows, use the command 'mode' to get the columns
         $this->_columns = 80;
@@ -257,7 +259,7 @@ class Qi_Console_Terminal
      * @param mixed $force Whether to force getting value from terminal
      * @return int
      */
-    public function get_lines($force=false)
+    public function get_lines($force = false)
     {
         if (DIRECTORY_SEPARATOR != "\\" || $this->_isCygwin) {
             if ($force) {
@@ -305,9 +307,13 @@ class Qi_Console_Terminal
      * @param bool $verticalPadding Include vertical padding
      * @return object Terminal self (to allow for chaining)
      */
-    public function pretty_message($text, $fg=7, $bg=4, $size=null,
-        $verticalPadding = true)
-    {
+    public function pretty_message(
+        $text,
+        $fg = 7,
+        $bg = 4,
+        $size = null,
+        $verticalPadding = true
+    ) {
         if (null === $size) {
             $size = $this->_columns;
         }
@@ -321,7 +327,7 @@ class Qi_Console_Terminal
 
         if ($len > $size || strpos($text, "\n") !== false) {
             $len   = $size;
-            $text  = wordwrap($text, $size-4, "\n");
+            $text  = wordwrap($text, $size - 4, "\n");
             $lines = explode("\n", $text);
             $text  = '';
             foreach ($lines as $line) {
@@ -391,7 +397,7 @@ class Qi_Console_Terminal
             echo $vert . str_repeat(' ', $w) . $vert;
         }
 
-        $this->locate($y+$h, $x);
+        $this->locate($y + $h, $x);
 
         echo $bl . str_repeat($horiz, $w) . $br;
 
@@ -443,7 +449,8 @@ class Qi_Console_Terminal
         if ($this->_terminfo->hasCapability($method)) {
             $args = array_merge(array($method), $args);
             $out  = call_user_func_array(
-                array($this->_terminfo, 'doCapability'), $args
+                array($this->_terminfo, 'doCapability'),
+                $args
             );
         }
 
@@ -477,7 +484,8 @@ class Qi_Console_Terminal
 
         $args = array_merge(array($cap_name), $args);
         $out  = call_user_func_array(
-            array($this->_terminfo, 'doCapability'), $args
+            array($this->_terminfo, 'doCapability'),
+            $args
         );
 
         if ($this->_isatty) {
@@ -494,7 +502,7 @@ class Qi_Console_Terminal
      * @param bool $verbose Flag to indicate if verbose results are returned
      * @return string
      */
-    public function get_capability($cap_name, $verbose=false)
+    public function get_capability($cap_name, $verbose = false)
     {
         if ($verbose) {
             return $this->_terminfo->displayCapability($cap_name);

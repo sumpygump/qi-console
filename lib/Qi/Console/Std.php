@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Console Std class file
  *
@@ -45,12 +46,12 @@ class Qi_Console_Std
         }
 
         switch ($mode) {
-        case "fgetc":
-            return fgetc(STDIN);
+            case "fgetc":
+                return fgetc(STDIN);
             break;
-        case "fgets":
-        default:
-            return fgets(STDIN);
+            case "fgets":
+            default:
+                return fgets(STDIN);
             break;
         }
     }

@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Qi_Console_Tabular 
+ * Qi_Console_Tabular
  *
  * @package Qi
  * @subpackage Console
@@ -10,45 +11,45 @@
  * Qi_Console_Tabular class
  *
  * An object for display tabular data in the console
- * 
+ *
  * @package Qi
  * @subpackage Console
- * @author Jansen Price <jansen.price@gmail.com> 
+ * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
 class Qi_Console_Tabular
 {
     /**
      * Table data
-     * 
+     *
      * @var array
      */
     protected $data = array();
 
     /**
      * Headers
-     * 
+     *
      * @var array
      */
     protected $headers = array();
 
     /**
      * Columns
-     * 
+     *
      * @var array
      */
     protected $cols = array();
 
     /**
      * Options
-     * 
+     *
      * @var array
      */
-    private $_options = array();
+    private $options = array();
 
     /**
      * Constructor
-     * 
+     *
      * @param array $data Table data to display
      * @param array $options Additional options to set
      *  Supported options:
@@ -66,7 +67,7 @@ class Qi_Console_Tabular
             $this->setData($data);
         }
 
-        $this->_options = array(
+        $this->options = array(
             'cellpadding' => '2',
             'border' => true,
             'margin' => 0,
@@ -108,8 +109,8 @@ class Qi_Console_Tabular
     }
 
     /**
-     * Parse options 
-     * 
+     * Parse options
+     *
      * @param array $options Options to parse
      * @return bool
      */
@@ -120,27 +121,27 @@ class Qi_Console_Tabular
         }
 
         foreach ($options as $key => $value) {
-            switch($key) {
-            case 'headers':
-                $this->setHeaders($value);
-                break;
-            case 'cellpadding':
-                $this->_options['cellpadding'] = $value;
-                break;
-            case 'cellalign':
-                $this->_options['cellalign'] = $value;
-                break;
-            case 'border':
-                $this->_options['border'] = $value;
-                break;
-            case 'margin':
-                $this->_options['margin'] = $value;
-                break;
-            case 'escapes':
-                $this->_options['escapes'] = $value;
-                break;
-            default:
-                break;
+            switch ($key) {
+                case 'headers':
+                    $this->setHeaders($value);
+                    break;
+                case 'cellpadding':
+                    $this->options['cellpadding'] = $value;
+                    break;
+                case 'cellalign':
+                    $this->options['cellalign'] = $value;
+                    break;
+                case 'border':
+                    $this->options['border'] = $value;
+                    break;
+                case 'margin':
+                    $this->options['margin'] = $value;
+                    break;
+                case 'escapes':
+                    $this->options['escapes'] = $value;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -161,7 +162,7 @@ class Qi_Console_Tabular
 
     /**
      * Render and display the table
-     * 
+     *
      * @param bool $buffer Whether to buffer and return output
      * @return mixed
      */
@@ -175,9 +176,9 @@ class Qi_Console_Tabular
 
         $this->_determineColumnWidths();
 
-        $padding = str_repeat(" ", $this->_options['cellpadding']);
-        $border = $this->_options['border'];
-        $margin = str_repeat(" ", $this->_options['margin']);
+        $padding = str_repeat(" ", $this->options['cellpadding']);
+        $border = $this->options['border'];
+        $margin = str_repeat(" ", $this->options['margin']);
 
         $headerContent = '';
         $rowsepString  = '';
@@ -206,6 +207,9 @@ class Qi_Console_Tabular
             $i       = 0;
 
             foreach ($row as $col) {
+                if (null === $col) {
+                    $col = '';
+                }
                 $padType = $this->getPadTypeForCol($i);
                 $string  = ($border || $i > 0 ? $padding : "")
                     . $this->eb_str_pad(trim($col), $this->cols[$i], ' ', $padType)
@@ -218,7 +222,7 @@ class Qi_Console_Tabular
             $tableContent .= $content . "\n";
 
             if (!$rowsepString) {
-                $rowsepString = $border ? 
+                $rowsepString = $border ?
                     $margin . "+" . str_repeat("-", strlen($content) - strlen($margin) - 2) . "+\n" :
                     "";
             }
@@ -245,8 +249,8 @@ class Qi_Console_Tabular
     }
 
     /**
-     * _determineColumnWidths 
-     * 
+     * _determineColumnWidths
+     *
      * @return void
      */
     protected function _determineColumnWidths()
@@ -264,9 +268,14 @@ class Qi_Console_Tabular
         for ($r = 0; $r < $dataCount; $r++) {
             $columnIndex = 0;
             foreach ($this->data[$r] as $column) {
+                if (null === $column) {
+                    $column = '';
+                }
+
                 $text = $this->_replaceEscapes(trim($column));
                 $this->_setColumnWidth(
-                    $columnIndex, strlen($text)
+                    $columnIndex,
+                    strlen($text)
                 );
                 $columnIndex++;
             }
@@ -281,16 +290,16 @@ class Qi_Console_Tabular
      */
     protected function _replaceEscapes($text)
     {
-        if (!isset($this->_options['escapes'])) {
+        if (!isset($this->options['escapes'])) {
             return $text;
         }
 
-        return str_replace($this->_options['escapes'], '', $text);
+        return str_replace($this->options['escapes'], '', $text);
     }
 
     /**
      * Set a column width
-     * 
+     *
      * @param int $col Column id
      * @param int $width Width
      * @return void
@@ -311,24 +320,25 @@ class Qi_Console_Tabular
 
     /**
      * Get the pad type for a column
-     * 
+     *
      * @param int $index Index of column
      * @return int Constant for strpad() function
      */
     public function getPadTypeForCol($index)
     {
-        if (!isset($this->_options['cellalign'])) {
+        if (!isset($this->options['cellalign'])) {
             return STR_PAD_RIGHT;
         }
 
         // If there is a alignment set for this column, use it
         // otherwise attempt to get the string (all are aligned the same)
-        if (is_array($this->_options['cellalign'])
-            && isset($this->_options['cellalign'][$index])
+        if (
+            is_array($this->options['cellalign'])
+            && isset($this->options['cellalign'][$index])
         ) {
-            return $this->_getPadType($this->_options['cellalign'][$index]);
+            return $this->_getPadType($this->options['cellalign'][$index]);
         } else {
-            return $this->_getPadType($this->_options['cellalign']);
+            return $this->_getPadType($this->options['cellalign']);
         }
     }
 
@@ -343,15 +353,15 @@ class Qi_Console_Tabular
         $type = strtoupper($type);
 
         switch ($type) {
-        case 'R':
-        case 'RIGHT':
-            $padType = STR_PAD_LEFT;
-            break;
-        case 'L': //pass through
-        case 'LEFT': //pass through
-        default:
-            $padType = STR_PAD_RIGHT;
-            break;
+            case 'R':
+            case 'RIGHT':
+                $padType = STR_PAD_LEFT;
+                break;
+            case 'L': //pass through
+            case 'LEFT': //pass through
+            default:
+                $padType = STR_PAD_RIGHT;
+                break;
         }
 
         return $padType;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Menu class file
  *
@@ -14,12 +15,12 @@
  * @author Jansen Price <jansen.price@gmail.com>
  * @version $Id$
  */
-class Qi_Console_Menu 
+class Qi_Console_Menu
 {
     /**
      * The highest choice in the menu
      *
-     * @var int 
+     * @var int
      */
     public $highest_choice;
 
@@ -51,7 +52,7 @@ class Qi_Console_Menu
 
     /**
      * Number of columns to display the menu items
-     * 
+     *
      * @var int
      */
     protected $_columns = 3;
@@ -71,14 +72,14 @@ class Qi_Console_Menu
      * @param array $options Options for configuration of the menu
      * @return void
      */
-    public function __construct($title, $menu_items, $options=array())
+    public function __construct($title, $menu_items, $options = array())
     {
         $this->_menu_items = $menu_items;
         $this->_title      = $title;
         $this->_maxlen     = 0;
         $this->_count      = count($this->_menu_items);
         if (isset($menu_items[0])) {
-            $this->highest_choice = $this->_count -1;
+            $this->highest_choice = $this->_count - 1;
         } else {
             $this->highest_choice = $this->_count;
         }
@@ -113,14 +114,14 @@ class Qi_Console_Menu
         Qi_Console_Std::out($this->_terminfo->doCapability('clear'));
         Qi_Console_Std::out("\n" . $this->_doTitle($this->_title));
 
-        $entries_per_column = ceil($this->_count/$this->_columns);
+        $entries_per_column = ceil($this->_count / $this->_columns);
 
         if (isset($this->_menu_items[0])) {
             $first = 0;
             $last  = $entries_per_column;
         } else {
             $first = 1;
-            $last  = $entries_per_column+1;
+            $last  = $entries_per_column + 1;
         }
 
         // Loop through each menu_item
@@ -129,7 +130,7 @@ class Qi_Console_Menu
 
             // Make each column
             for ($c = 0; $c < $this->_columns; $c++) {
-                $index = $i + ($c*$entries_per_column);
+                $index = $i + ($c * $entries_per_column);
 
                 if (!isset($this->_menu_items[$index])) {
                     continue;
@@ -140,14 +141,16 @@ class Qi_Console_Menu
                     Qi_Console_Std::out(
                         sprintf(
                             "%2s. %-" . $this->_maxlen . "s  ",
-                            $index, $this->_menu_items[$index]
+                            $index,
+                            $this->_menu_items[$index]
                         )
                     );
                 } else {
                     Qi_Console_Std::out(
                         sprintf(
                             "%2s. %s",
-                            $index, $this->_menu_items[$index]
+                            $index,
+                            $this->_menu_items[$index]
                         )
                     );
                 }
@@ -164,7 +167,7 @@ class Qi_Console_Menu
      * @param mixed $default The default prompt string
      * @return string The input from user
      */
-    public function prompt($prompt, $default=null)
+    public function prompt($prompt, $default = null)
     {
         Qi_Console_Std::out("\n" . $prompt);
         return Qi_Console_Std::in('fgets', $default);
@@ -195,7 +198,7 @@ class Qi_Console_Menu
     {
         $out = '';
         $len = strlen($text);
-        for ($i=0;$i<$len;$i++) {
+        for ($i = 0; $i < $len; $i++) {
             $out .= $text[$i] . " ";
         }
         $out .= "\n" . str_repeat("=", $len * 2) . "\n";

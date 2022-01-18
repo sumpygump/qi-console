@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Qi Console Terminfo Test Class file
  *
@@ -16,6 +17,8 @@ use PHPUnit\Framework\TestCase;
  */
 class TerminfoTest extends TestCase
 {
+    public $_object;
+
     /**
      * Setup before each test
      *

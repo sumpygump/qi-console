@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Exception Handler (console version)
  *
@@ -17,6 +18,8 @@
 class Qi_Console_ExceptionHandler
 {
     protected $isDebug = false;
+
+    protected $_terminal;
 
     /**
      * Constructor
@@ -77,7 +80,10 @@ class Qi_Console_ExceptionHandler
         if ($this->isDebug) {
             $message = sprintf(
                 "%s: %s in %s on line %s",
-                get_class($exception), $exception->getMessage(), $exception->getFile(), $exception->getLine()
+                get_class($exception),
+                $exception->getMessage(),
+                $exception->getFile(),
+                $exception->getLine()
             );
         }
 

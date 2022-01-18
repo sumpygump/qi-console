@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Terminfo class file
  *
- * @package Qi
+ * @package    Qi
  * @subpackage Console
  */
 
@@ -10,11 +11,11 @@
  * Terminfo
  * Class for getting values from terminfo
  *
- * @package Qi
+ * @package    Qi
  * @subpackage Console
- * @author Jansen Price <jansen.price@gmail.com>
- * @license http://www.opensource.org/licenses/mit-license.php MIT
- * @version $Id$
+ * @author     Jansen Price <jansen.price@gmail.com>
+ * @license    http://www.opensource.org/licenses/mit-license.php MIT
+ * @version    $Id$
  */
 class Qi_Console_Terminfo
 {
@@ -85,7 +86,8 @@ class Qi_Console_Terminfo
      */
     private $_isCygwin = false;
 
-    /**#@+
+    /**
+     * #@+
      * Capability type constants
      *
      * @var mixed
@@ -95,7 +97,9 @@ class Qi_Console_Terminfo
     const CAP_TYPE_STRING      = 3;
     const CAP_TYPE_NUMBER_CHAR = '#';
     const CAP_TYPE_STRING_CHAR = '=';
-    /**#@-*/
+    /**
+     * #@-
+     */
 
     /**
      * Capability types
@@ -117,8 +121,8 @@ class Qi_Console_Terminfo
     /**
      * __construct
      *
-     * @param bool $forceBin Whether to get terminfo data from binary in $TERM
-     * @param string $overrideTerminal Force to use a certain terminal by name
+     * @param  bool   $forceBin         Whether to get terminfo data from binary in $TERM
+     * @param  string $overrideTerminal Force to use a certain terminal by name
      * @return void
      */
     public function __construct($forceBin = false, $overrideTerminal = null)
@@ -129,7 +133,8 @@ class Qi_Console_Terminfo
             );
         }
 
-        if (isset($_SERVER['TERM'])
+        if (
+            isset($_SERVER['TERM'])
             && strpos($_SERVER['TERM'], 'cygwin') !== false
         ) {
             $this->_isCygwin = true;
@@ -143,7 +148,8 @@ class Qi_Console_Terminfo
             $this->getTerminfoData();
         }
 
-        if ((DIRECTORY_SEPARATOR != "\\" && !$this->_isCygwin)
+        if (
+            (DIRECTORY_SEPARATOR != "\\" && !$this->_isCygwin)
             && !$this->_terminfoData
         ) {
             $this->getTerminfoBinData();
@@ -160,7 +166,8 @@ class Qi_Console_Terminfo
      */
     public function getTerminfoData()
     {
-        if ((DIRECTORY_SEPARATOR == "\\" && !$this->_isCygwin)
+        if (
+            (DIRECTORY_SEPARATOR == "\\" && !$this->_isCygwin)
             || !isset($_SERVER['TERM'])
         ) {
             $this->_terminfoData = null;
@@ -184,8 +191,8 @@ class Qi_Console_Terminfo
     /**
      * Get capability by name
      *
-     * @param mixed $capName Capability name
-     * @param mixed $verbose Verbose output
+     * @param  mixed $capName Capability name
+     * @param  mixed $verbose Verbose output
      * @return string|bool
      */
     public function getCapability($capName, $verbose = false)
@@ -207,7 +214,7 @@ class Qi_Console_Terminfo
     /**
      * Output the capability for a given cap name
      *
-     * @param mixed $capName The name of the capability
+     * @param  mixed $capName The name of the capability
      * @return string A description of the capability
      */
     public function displayCapability($capName)
@@ -229,7 +236,7 @@ class Qi_Console_Terminfo
     /**
      * Whether this terminal has a certain capability
      *
-     * @param mixed $capName The name of the capability
+     * @param  mixed $capName The name of the capability
      * @return bool Whether capability is present
      */
     public function hasCapability($capName)
@@ -287,8 +294,8 @@ class Qi_Console_Terminfo
      *
      * Attempt to call a capability
      *
-     * @param mixed $method The capability to call
-     * @param mixed $args Arguments to pass to the capability
+     * @param  mixed $method The capability to call
+     * @param  mixed $args   Arguments to pass to the capability
      * @return string|bool
      */
     public function __call($method, $args)
@@ -304,7 +311,7 @@ class Qi_Console_Terminfo
     /**
      * _getCacheKey
      *
-     * @param mixed $parms Params for cache key
+     * @param  mixed $parms Params for cache key
      * @return string
      */
     private function _getCacheKey($parms = array())
@@ -315,7 +322,7 @@ class Qi_Console_Terminfo
     /**
      * doCapability
      *
-     * @param mixed $capName Capability name
+     * @param  mixed $capName Capability name
      * @return string
      */
     public function doCapability($capName)
@@ -372,7 +379,7 @@ class Qi_Console_Terminfo
      * This was ported from tput c library
      * see _nc_tparm_analyze() in ncurses/tinfo/lib_tparm.c
      *
-     * @param mixed $capString Capability string
+     * @param  mixed $capString Capability string
      * @return int
      */
     private function _getRequiredParmCount($capString)
@@ -383,25 +390,26 @@ class Qi_Console_Terminfo
         for ($cp = 0; $cp < $strLen; $cp++) {
             if ($capString[$cp] == '%') {
                 switch ($capString[++$cp]) {
-                case '%':
-                    $cp++;
-                    break;
-                case 'i':
-                    if ($popcount < 1) {
-                        $popcount = 1;
-                    }
-                    break;
-                case 'p':
-                    $cp++;
-                    $i = $capString[$cp];
-                    if (is_numeric($i)
-                        && $popcount < $i
-                    ) {
-                        $popcount = $i;
-                    }
-                    break;
-                default:
-                    break;
+                    case '%':
+                        $cp++;
+                        break;
+                    case 'i':
+                        if ($popcount < 1) {
+                            $popcount = 1;
+                        }
+                        break;
+                    case 'p':
+                        $cp++;
+                        $i = $capString[$cp];
+                        if (
+                            is_numeric($i)
+                            && $popcount < $i
+                        ) {
+                            $popcount = $i;
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -416,8 +424,8 @@ class Qi_Console_Terminfo
      * Note: The 0th parm is expected to be the cap_name,
      *  so p1 starts at $parm[1]
      *
-     * @param mixed $capString The capability string
-     * @param mixed $parms Params to pass to the capability
+     * @param  mixed $capString The capability string
+     * @param  mixed $parms     Params to pass to the capability
      * @return string
      */
     private function _processCapabilityParms($capString, $parms)
@@ -436,92 +444,117 @@ class Qi_Console_Terminfo
                     continue;
                 }
                 switch ($capString[$cp]) {
-                case '%':
-                    $out .= '%';
-                    break;
-                case 'd':
-                case 'o':
-                case 'x':
-                case 'X':
-                case 'c':
-                    $out .= array_pop($stack);
-                    break;
-                case 'p':
-                    $cp++;
-                    $parmIndex = $capString[$cp];
-                    array_push($stack, $parms[$parmIndex]);
-                    break;
-                case 'i':
-                    if (isset($parms[1])) {
-                        $parms[1]++;
-                    }
-                    if (isset($parms[2])) {
-                        $parms[2]++;
-                    }
-                    break;
-                case '{':     // output literal between { and }
-                    $cp++;
-                    array_push($stack, $capString[$cp]);
-                    $cp++;   // skip closing brace (})
-                    break;
-                case '=':
-                    $x = array_pop($stack);
-                    $y = array_pop($stack);
-                    array_push($stack, ($x==$y));
-                    break;
-                case 't':
-                    $x = array_pop($stack);
-                    if (!$x) {
-                        // skip forward to the next %e or %; in level 0
+                    case '%':
+                        $out .= '%';
+                        break;
+                    case 'd':
+                    case 'o':
+                    case 'x':
+                    case 'X':
+                    case 'c':
+                        $out .= array_pop($stack);
+                        break;
+                    case 'p':
+                        $cp++;
+                        $parmIndex = $capString[$cp];
+                        array_push($stack, $parms[$parmIndex]);
+                        break;
+                    case 'i':
+                        if (isset($parms[1])) {
+                            $parms[1]++;
+                        }
+                        if (isset($parms[2])) {
+                            $parms[2]++;
+                        }
+                        break;
+                    case '{':     // output literal between braces
+                        $cp++;
+                        $value = '';
+                        while ($capString[$cp] != '}') {
+                            $value .= $capString[$cp];
+                            $cp++;
+                        }
+                        array_push($stack, (int)$value);
+                        break;
+                    case '=':
+                        $y = array_pop($stack);
+                        $x = array_pop($stack);
+                        array_push($stack, ($x == $y));
+                        break;
+                    case '<':
+                        $y = array_pop($stack);
+                        $x = array_pop($stack);
+                        array_push($stack, ($x < $y));
+                        break;
+                    case '>':
+                        $y = array_pop($stack);
+                        $x = array_pop($stack);
+                        array_push($stack, ($x > $y));
+                        break;
+                    case '+':
+                        $y = array_pop($stack);
+                        $x = array_pop($stack);
+                        array_push($stack, ($x + $y));
+                        break;
+                    case '-':
+                        $y = array_pop($stack);
+                        $x = array_pop($stack);
+                        array_push($stack, ($x - $y));
+                        break;
+                    case 't':
+                        $x = array_pop($stack);
+                        if (!$x) {
+                            // skip forward to the next %e or %; in level 0
+                            $cp++;
+                            $level = 0;
+                            while ($cp < $strlen) {
+                                if ($capString[$cp] == '%') {
+                                    $cp++;
+                                    if ($capString[$cp] == '?') {
+                                        $level++;
+                                    } elseif ($capString[$cp] == ';') {
+                                        if ($level > 0) {
+                                            $level--;
+                                        } else {
+                                            break;
+                                        }
+                                    } elseif (
+                                        $capString[$cp] == 'e'
+                                        && $level == 0
+                                    ) {
+                                        break;
+                                    }
+                                }
+                                $cp++;
+                            }
+                        }
+                        break;
+                    case 'e':
+                        // skip forward to the next %; in level 0
                         $cp++;
                         $level = 0;
-                        while ($capString[$cp] < $strlen) {
+                        while ($cp < $strlen) {
                             if ($capString[$cp] == '%') {
                                 $cp++;
                                 if ($capString[$cp] == '?') {
                                     $level++;
-                                } else if ($capString[$cp] == ';') {
+                                } elseif ($capString[$cp] == ';') {
                                     if ($level > 0) {
                                         $level--;
                                     } else {
                                         break;
                                     }
-                                } else if ($capString[$cp] == 'e'
-                                    && $level == 0
-                                ) {
-                                    break;
                                 }
                             }
                             $cp++;
                         }
-                    }
-                    break;
-                case 'e':
-                    // skip forward to the next %; in level 0
-                    $cp++;
-                    $level = 0;
-                    while ($capString[$cp] < $strlen) {
-                        if ($capString[$cp] == '%') {
-                            $cp++;
-                            if ($capString[$cp] == '?') {
-                                $level++;
-                            } else if ($capString[$cp] == ';') {
-                                if ($level > 0) {
-                                    $level--;
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                        $cp++;
-                    }
-                    break;
-                case '?':
-                    break;
-                case ';':
-                    break;
-                default:
-                    break;
+                        break;
+                    case '?':
+                        break;
+                    case ';':
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -536,7 +569,8 @@ class Qi_Console_Terminfo
     private function _parseTerminfoData()
     {
         if ($this->_terminfoData) {
-            if (isset($this->_terminfoData[0])
+            if (
+                isset($this->_terminfoData[0])
                 && substr(trim($this->_terminfoData[0]), 0, 1) == '#'
             ) {
                 unset($this->_terminfoData[0]);
@@ -563,7 +597,7 @@ class Qi_Console_Terminfo
     /**
      * Parse a terminfo capability
      *
-     * @param mixed $string Capabiilty string
+     * @param  mixed $string Capabiilty string
      * @return array Array with code, type and value
      */
     private function _parseTerminfoCapability($string)
@@ -587,7 +621,7 @@ class Qi_Console_Terminfo
             $parts = array();
 
             $parts[0] = substr($string, 0, $splitpoint);
-            $parts[1] = substr($string, $splitpoint+1);
+            $parts[1] = substr($string, $splitpoint + 1);
 
             $capabilityNameCode = $parts[0];
             $capabilityType     = self::CAP_TYPE_STRING;
@@ -650,7 +684,7 @@ class Qi_Console_Terminfo
      *
      * Outputs a listing of hexidecimal values in 16 byte rows
      *
-     * @param mixed $text Input text
+     * @param  mixed $text Input text
      * @return string
      */
     private function _hexView($text)
@@ -661,11 +695,15 @@ class Qi_Console_Terminfo
             . 'abcdefghijklmnopqrstuvwxyz'
             . '0123456789~!@#$%^&*()_+-={}|[]\:";\'<>?,./';
 
+        if (null === $text) {
+            return $outStr;
+        }
+
         $charCount = strlen($text);
         for ($i = 0; $i < $charCount; $i += $num) {
             $printStr = '';
             for ($j = 0; $j < $num; $j++) {
-                $char = substr($text, $i+$j, 1);
+                $char = substr($text, $i + $j, 1);
 
                 $outStr .= sprintf("%02X", ord($char)) . " ";
 
