@@ -187,14 +187,16 @@ class Qi_Console_Tabular
             $headerContent .= $margin . ($border ? "|" : "");
             for ($i = 0; $i < count($this->headers); $i++) {
                 $string = ($border || $i > 0 ? $padding : "")
-                    . $this->eb_str_pad($this->headers[$i], $this->cols[$i])
+                    . $this->eb_str_pad(trim($this->headers[$i]), $this->cols[$i])
                     . ($border ? $padding . "|" : "");
 
                 $headerContent .= $string;
             }
 
+            $calc = mb_strlen($headerContent) - mb_strlen($margin) - 2;
+
             $rowsepString = $border ?
-                $margin . "+" . str_repeat("-", strlen($headerContent) - strlen($margin) - 2) . "+\n" :
+                $margin . "+" . str_repeat("-", $calc) . "+\n" :
                 "";
 
             $out .= $rowsepString . $headerContent
@@ -223,7 +225,7 @@ class Qi_Console_Tabular
 
             if (!$rowsepString) {
                 $rowsepString = $border ?
-                    $margin . "+" . str_repeat("-", strlen($content) - strlen($margin) - 2) . "+\n" :
+                    $margin . "+" . str_repeat("-", mb_strlen($content) - mb_strlen($margin) - 2) . "+\n" :
                     "";
             }
         }
@@ -244,8 +246,8 @@ class Qi_Console_Tabular
 
     protected function eb_str_pad($input, $pad_length, $pad_string = ' ', $pad_type = STR_PAD_RIGHT)
     {
-        $diff = strlen($input) - strlen($this->_replaceEscapes($input));
-        return str_pad($input, $pad_length + $diff, $pad_string, $pad_type);
+        $diff = mb_strlen($input) - mb_strlen($this->_replaceEscapes($input));
+        return self::mb_str_pad($input, $pad_length + $diff, $pad_string, $pad_type);
     }
 
     /**
@@ -259,7 +261,7 @@ class Qi_Console_Tabular
         if ($headerCount) {
             for ($i = 0; $i < $headerCount; $i++) {
                 $text = $this->_replaceEscapes(trim($this->headers[$i]));
-                $this->_setColumnWidth($i, strlen($text));
+                $this->_setColumnWidth($i, mb_strlen($text));
             }
         }
 
@@ -275,7 +277,7 @@ class Qi_Console_Tabular
                 $text = $this->_replaceEscapes(trim($column));
                 $this->_setColumnWidth(
                     $columnIndex,
-                    strlen($text)
+                    mb_strlen($text)
                 );
                 $columnIndex++;
             }
@@ -365,6 +367,54 @@ class Qi_Console_Tabular
         }
 
         return $padType;
+    }
+
+    /**
+     * Pad a string to a certain length with another string (multibyte-string version).
+     *
+     * @param string $input The input string
+     * @param int $pad_length Desired target length of the output string
+     * @param string $pad_string The characters to append/prepend in order to reach $pad_length
+     * @param int $pad_type Where to pad the string: left, right or both sides.
+     *                      Allowed values: `STR_PAD_LEFT`, `STR_PAD_RIGHT`, `STR_PAD_BOTH`.
+     *                      Default: `STR_PAD_RIGHT`
+     *
+     * @return string Input string padded to desired length
+     *
+     * @see https://secure.php.net/manual/en/function.str-pad.php
+     */
+    public static function mb_str_pad($input, $pad_length, $pad_string = ' ', $pad_type = STR_PAD_RIGHT)
+    {
+        if (!in_array($pad_type, [STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH])) {
+            throw new InvalidArgumentException('Invalid value for argument $pad_type');
+        }
+
+        // Total number of characters we need to fill
+        $gap = $pad_length - mb_strlen($input);
+
+        // Bail early if the input is already at or above the target length
+        if ($gap < 1) {
+            return $input;
+        }
+
+        // Determine the number of characters we need to prepend on the left
+        if ($pad_type === STR_PAD_BOTH) {
+            $left_gap = (int) $gap / 2;
+        } elseif ($pad_type === STR_PAD_LEFT) {
+            $left_gap = $gap;
+        } else {
+            $left_gap = 0;
+        }
+
+        // Build the padding string left of the input
+        $pad_string_length = mb_strlen($pad_string);
+        $left_padding = mb_substr(str_repeat($pad_string, ceil($left_gap / $pad_string_length)), 0, $left_gap);
+
+        // Build the padding string right of the input
+        $right_gap = $gap - mb_strlen($left_padding);
+        $right_padding = mb_substr(str_repeat($pad_string, ceil($right_gap / $pad_string_length)), 0, $right_gap);
+
+        return $left_padding . $input . $right_padding;
     }
 }
 

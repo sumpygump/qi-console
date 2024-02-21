@@ -348,4 +348,29 @@ class TabularTest extends TestCase
 
         $this->assertEquals($expected, $result);
     }
+
+    public function testWithNonAsciiChars()
+    {
+        $data = [
+            ['La Máquina de Hacer Pájaros', 'a', 'b'],
+            ['In the Hallway', 'a', 'b'],
+        ];
+
+        $options = [
+            'headers' => ['lábel', 'x', 'y'],
+        ];
+
+        $this->object = new Qi_Console_Tabular($data, $options);
+
+        $expected = "+-------------------------------------------+\n"
+            . "|  lábel                        |  x  |  y  |\n"
+            . "+-------------------------------------------+\n"
+            . "|  La Máquina de Hacer Pájaros  |  a  |  b  |\n"
+            . "|  In the Hallway               |  a  |  b  |\n"
+            . "+-------------------------------------------+\n";
+
+        $result = $this->object->display(true);
+
+        $this->assertEquals($expected, $result);
+    }
 }
