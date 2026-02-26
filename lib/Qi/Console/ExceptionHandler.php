@@ -19,7 +19,7 @@ class Qi_Console_ExceptionHandler
 {
     protected $isDebug = false;
 
-    protected $_terminal;
+    protected $terminal;
 
     /**
      * Constructor
@@ -30,7 +30,7 @@ class Qi_Console_ExceptionHandler
      */
     public function __construct($terminal, $bindHandlers = false, $isDebug = false)
     {
-        $this->_terminal = $terminal;
+        $this->terminal = $terminal;
 
         if ($bindHandlers === true) {
             $this->bindHandlers($isDebug);
@@ -46,8 +46,8 @@ class Qi_Console_ExceptionHandler
     {
         $this->isDebug = (bool) $isDebug;
 
-        set_exception_handler(array($this, 'handleException'));
-        set_error_handler(array($this, 'handleError'));
+        set_exception_handler([$this, 'handleException']);
+        set_error_handler([$this, 'handleError']);
     }
 
     /**
@@ -59,12 +59,12 @@ class Qi_Console_ExceptionHandler
     {
         list($errno, $message, $file, $line) = func_get_args();
 
-        $message = self::_getErrorCodeName($errno)
+        $message = self::getErrorCodeName($errno)
             . ": " . $message . " in " . $file . ":" . $line;
 
-        $this->_terminal->setaf(1);
+        $this->terminal->setaf(1);
         echo $message . "\n";
-        $this->_terminal->op();
+        $this->terminal->op();
     }
 
     /**
@@ -88,7 +88,7 @@ class Qi_Console_ExceptionHandler
         }
 
         echo "\n";
-        $this->_terminal->pretty_message($message, 7, 1);
+        $this->terminal->pretty_message($message, 7, 1);
         echo "\n";
 
         if ($this->isDebug) {
@@ -104,9 +104,9 @@ class Qi_Console_ExceptionHandler
      * @param int $code The PHP error code
      * @return string
      */
-    private static function _getErrorCodeName($code)
+    private static function getErrorCodeName($code)
     {
-        $error_levels = array(
+        $error_levels = [
             1     => 'E_ERROR',
             2     => 'E_WARNING',
             4     => 'E_PARSE',
@@ -122,7 +122,7 @@ class Qi_Console_ExceptionHandler
             4096  => 'E_RECOVERABLE_ERROR',
             8192  => 'E_DEPRECATED',
             16384 => 'E_USER_DEPRECATED',
-        );
+        ];
 
         return $error_levels[$code];
     }

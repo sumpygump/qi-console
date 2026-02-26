@@ -6,10 +6,10 @@
 // Find where the composer autoload is
 // This tool was installed as a composed dependency or directly
 $root = realpath(dirname(__DIR__));
-$autoloadLocations = array(
+$autoloadLocations = [
     __DIR__ . '/../../../autoload.php',
     $root . DIRECTORY_SEPARATOR . 'vendor/autoload.php'
-);
+];
 foreach ($autoloadLocations as $file) {
     if (file_exists($file)) {
         define('QI_COMPOSER_AUTOLOAD', $file);
@@ -28,9 +28,9 @@ if (!defined('QI_COMPOSER_AUTOLOAD')) {
 // Load composer autoloader
 $autoload = require_once QI_COMPOSER_AUTOLOAD;
 
-$options = array(
+$options = [
     'use_escape_codes' => true,
-);
+];
 $tl = new Qi_Console_TermLetters($options);
 
 if (!isset($argv[1]) || $argv[1] == '-') {

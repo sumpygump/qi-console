@@ -29,40 +29,40 @@ class Qi_Console_Menu
      *
      * @var string
      */
-    protected $_title;
+    protected $title;
 
     /**
      * An array of the menu choices
      *
      * @var array
      */
-    protected $_menu_items = array();
+    protected $menu_items = [];
 
     /**
      * The column count of the terminal window
      *
      * @var int
      */
-    protected $_maxlen;
+    protected $maxlen;
 
-    /**
+    /*
      * @var int count
      */
-    protected $_count;
+    protected $count;
 
     /**
      * Number of columns to display the menu items
      *
      * @var int
      */
-    protected $_columns = 3;
+    protected $columns = 3;
 
     /**
      * Terminfo The Terminfo object
      *
      * @var object
      */
-    protected $_terminfo;
+    protected $terminfo;
 
     /**
      * Create a new menu object
@@ -72,36 +72,36 @@ class Qi_Console_Menu
      * @param array $options Options for configuration of the menu
      * @return void
      */
-    public function __construct($title, $menu_items, $options = array())
+    public function __construct($title, $menu_items, $options = [])
     {
-        $this->_menu_items = $menu_items;
-        $this->_title      = $title;
-        $this->_maxlen     = 0;
-        $this->_count      = count($this->_menu_items);
+        $this->menu_items = $menu_items;
+        $this->title      = $title;
+        $this->maxlen     = 0;
+        $this->count      = count($this->menu_items);
         if (isset($menu_items[0])) {
-            $this->highest_choice = $this->_count - 1;
+            $this->highest_choice = $this->count - 1;
         } else {
-            $this->highest_choice = $this->_count;
+            $this->highest_choice = $this->count;
         }
 
         if ($options) {
             // Set columns for menu
             if (isset($options['columns'])) {
-                $this->_columns = $options['columns'];
+                $this->columns = $options['columns'];
             }
 
             // Pass in terminfo object
             if (isset($options['terminfo'])) {
-                $this->_terminfo = $options['terminfo'];
+                $this->terminfo = $options['terminfo'];
             }
         }
 
-        if (!$this->_terminfo) {
+        if (!$this->terminfo) {
             include_once 'Terminfo.php';
-            $this->_terminfo = new Qi_Console_Terminfo();
+            $this->terminfo = new Qi_Console_Terminfo();
         }
 
-        $this->_getLongestMenuItem();
+        $this->getLongestMenuItem();
     }
 
     /**
@@ -111,12 +111,12 @@ class Qi_Console_Menu
      */
     public function displayMenuItems()
     {
-        Qi_Console_Std::out($this->_terminfo->doCapability('clear'));
-        Qi_Console_Std::out("\n" . $this->_doTitle($this->_title));
+        Qi_Console_Std::out($this->terminfo->doCapability('clear'));
+        Qi_Console_Std::out("\n" . $this->doTitle($this->title));
 
-        $entries_per_column = ceil($this->_count / $this->_columns);
+        $entries_per_column = ceil($this->count / $this->columns);
 
-        if (isset($this->_menu_items[0])) {
+        if (isset($this->menu_items[0])) {
             $first = 0;
             $last  = $entries_per_column;
         } else {
@@ -129,20 +129,20 @@ class Qi_Console_Menu
             Qi_Console_Std::out("\n");
 
             // Make each column
-            for ($c = 0; $c < $this->_columns; $c++) {
+            for ($c = 0; $c < $this->columns; $c++) {
                 $index = $i + ($c * $entries_per_column);
 
-                if (!isset($this->_menu_items[$index])) {
+                if (!isset($this->menu_items[$index])) {
                     continue;
                 }
 
-                if ($this->_columns > 1) {
+                if ($this->columns > 1) {
                     // Pad each entry so they line up correctly.
                     Qi_Console_Std::out(
                         sprintf(
-                            "%2s. %-" . $this->_maxlen . "s  ",
+                            "%2s. %-" . $this->maxlen . "s  ",
                             $index,
-                            $this->_menu_items[$index]
+                            $this->menu_items[$index]
                         )
                     );
                 } else {
@@ -150,7 +150,7 @@ class Qi_Console_Menu
                         sprintf(
                             "%2s. %s",
                             $index,
-                            $this->_menu_items[$index]
+                            $this->menu_items[$index]
                         )
                     );
                 }
@@ -178,12 +178,12 @@ class Qi_Console_Menu
      *
      * @return void
      */
-    private function _getLongestMenuItem()
+    private function getLongestMenuItem()
     {
-        foreach ($this->_menu_items as $menu_item) {
+        foreach ($this->menu_items as $menu_item) {
             $length = strlen($menu_item);
-            if ($length > $this->_maxlen) {
-                $this->_maxlen = $length;
+            if ($length > $this->maxlen) {
+                $this->maxlen = $length;
             }
         }
     }
@@ -194,7 +194,7 @@ class Qi_Console_Menu
      * @param string $text The title text
      * @return string
      */
-    private function _doTitle($text)
+    private function doTitle($text)
     {
         $out = '';
         $len = strlen($text);

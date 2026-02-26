@@ -35,8 +35,8 @@ class Qi_Console_ArgV
      *
      * @var string
      */
-    const TYPE_OPTION    = 'option';
-    const TYPE_PARAMETER = 'parameter';
+    public const TYPE_OPTION    = 'option';
+    public const TYPE_PARAMETER = 'parameter';
     /**#@-*/
 
     /**
@@ -44,63 +44,63 @@ class Qi_Console_ArgV
      *
      * @var array
      */
-    protected $_data = array();
+    protected $data = [];
 
     /**
      * Storage for the argument rules (params starting with '-' or '--')
      *
      * @var array
      */
-    protected $_rules = array();
+    protected $rules = [];
 
     /**
      * Map to link short and long argument names (e.g., "-p" and "--param")
      *
      * @var array
      */
-    protected $_ruleMap = array();
+    protected $ruleMap = [];
 
     /**
      * Storage for the standalone arguments
      *
      * @var array
      */
-    protected $_argumentStack = array();
+    protected $argumentStack = [];
 
     /**
      * Keep track of the current index of the argumentStack when setting them
      *
      * @var int
      */
-    private $_argumentIndex = 1;
+    private $argumentIndex = 1;
 
     /**
      * Help messages for each argument
      *
      * @var array
      */
-    protected $_help = array();
+    protected $help = [];
 
     /**
      * Raw Arguments
      *
      * @var array
      */
-    protected $_rawArguments = array();
+    protected $rawArguments = [];
 
     /**
      * Rules for parsing parameters
      *
      * @var array
      */
-    protected $_rawRules = array();
+    protected $rawRules = [];
 
     /**
      * Flag to indicate whether parsing has been done
      *
      * @var bool
      */
-    protected $_hasParsed = false;
+    protected $hasParsed = false;
 
     /**
      * Create a new instance of an object of this class.
@@ -109,14 +109,14 @@ class Qi_Console_ArgV
      * of the option flags, parameters, help text
      * and the names of the arguments.
      *
-     * e.g., array(
+     * e.g., [
      *     'help|h'   => 'Show help',
      *     'delete|d' => 'Enter delete mode',
      *     'f'        => 'Flag with no long param name',
      *     'long'     => 'Flag with no short param name',
      *     'name|n:'  => 'Name to use', // colon means parameter required
      *     'arg:file' => 'Filename to use'
-     * );
+     * ];
      *
      * So, after constructing the object,
      * the following will be available:
@@ -131,10 +131,10 @@ class Qi_Console_ArgV
      * @param array $rules A list of option flags and param names for arguments
      * @return void
      */
-    public function __construct($argv, $rules = array())
+    public function __construct($argv, $rules = [])
     {
-        $this->_rawRules = $rules;
-        $this->_parseRules($rules);
+        $this->rawRules = $rules;
+        $this->parseRules($rules);
 
         if (is_string($argv)) {
             $argv = self::parseArgumentString($argv);
@@ -148,7 +148,7 @@ class Qi_Console_ArgV
             return;
         }
 
-        $this->_rawArguments = $argv;
+        $this->rawArguments = $argv;
 
         $this->parse($argv);
     }
@@ -162,19 +162,19 @@ class Qi_Console_ArgV
     public function parse($argv = null)
     {
         if (null === $argv) {
-            $argv = $this->_rawArguments;
+            $argv = $this->rawArguments;
         }
 
         // If already parsed, then re-parse the rules
         // in order to reset the argument stack
-        if ($this->_hasParsed === true) {
-            $this->_argumentIndex = 1;
+        if ($this->hasParsed === true) {
+            $this->argumentIndex = 1;
 
-            $this->_data = array(); // reset data
-            $this->_parseRules($this->_rawRules);
+            $this->data = []; // reset data
+            $this->parseRules($this->rawRules);
         }
 
-        $this->_hasParsed = true;
+        $this->hasParsed = true;
 
         // enforce numeric array
         $argv = array_values($argv);
@@ -199,7 +199,7 @@ class Qi_Console_ArgV
                     if ($shuntVal != '') {
                         $nextVal = $shuntVal;
                     } else {
-                        $nextVal = $this->_getProperNextVal($argv, $i);
+                        $nextVal = $this->getProperNextVal($argv, $i);
                     }
                     if (null === $nextVal) {
                         // If we didn't find anything, go back to the shuntval
@@ -215,7 +215,7 @@ class Qi_Console_ArgV
                     $nextVal = true;
                 }
 
-                $this->_setSingleOption($option, $nextVal);
+                $this->setSingleOption($option, $nextVal);
             } elseif (substr($val, 0, 1) == "-") {
                 $optionString = substr($val, 1);
 
@@ -226,12 +226,12 @@ class Qi_Console_ArgV
                     $rule   = $this->getRule($option);
 
                     if ($rule && $rule['type'] == self::TYPE_PARAMETER) {
-                        $nextVal = $this->_getProperNextVal($argv, $i);
+                        $nextVal = $this->getProperNextVal($argv, $i);
                         if (null === $nextVal) {
                             // Detect short parameter shunt
                             if (substr($optionString, $s + 1) != '') {
                                 $nextVal = substr($optionString, $s + 1);
-                                $this->_setSingleOption($option, $nextVal);
+                                $this->setSingleOption($option, $nextVal);
                                 break;
                             }
                             throw new Qi_Console_ArgVException(
@@ -242,10 +242,10 @@ class Qi_Console_ArgV
                         $nextVal = true;
                     }
 
-                    $this->_setSingleOption($option, $nextVal);
+                    $this->setSingleOption($option, $nextVal);
                 }
             } else {
-                $this->_setArgument(array_shift($this->_argumentStack), $val);
+                $this->setArgument(array_shift($this->argumentStack), $val);
             }
         }
     }
@@ -257,7 +257,7 @@ class Qi_Console_ArgV
      */
     public function hasData()
     {
-        return (!empty($this->_data));
+        return (!empty($this->data));
     }
 
     /**
@@ -267,7 +267,7 @@ class Qi_Console_ArgV
      */
     public function toArray()
     {
-        return (array) ($this->_data);
+        return (array) ($this->data);
     }
 
     /**
@@ -276,16 +276,16 @@ class Qi_Console_ArgV
      * @param array $rules The rules to parse
      * @return void
      */
-    protected function _parseRules($rules)
+    protected function parseRules($rules)
     {
-        $this->_argumentStack = array();
+        $this->argumentStack = [];
 
         foreach ($rules as $name => $value) {
             if (substr($name, 0, 4) == 'arg:') {
                 // "arg:<something>" is a way to name standalone arguments
                 $name = substr($name, 4);
 
-                $this->_argumentStack[] = $name;
+                $this->argumentStack[] = $name;
                 $this->addHelp('<' . $name . '>', $value);
             } else {
                 if (is_numeric($name)) {
@@ -323,19 +323,19 @@ class Qi_Console_ArgV
 
             $shortName = substr($parts[1], 0, 1); // force to one char
 
-            $this->_addRule($shortName, $type);
-            $this->_addRule($name, $type);
-            $this->_mapRules($shortName, $name);
+            $this->addArgRule($shortName, $type);
+            $this->addArgRule($name, $type);
+            $this->mapRules($shortName, $name);
             $helpName = $shortName . '|' . $name;
         } else {
-            $this->_addRule($name, $type);
+            $this->addArgRule($name, $type);
             $helpName = $name;
             if (strlen($name) == 1) {
                 // provide backwards compatibility
                 $longName = $helpText;
                 $helpText = '';
-                $this->_addRule($longName, $type);
-                $this->_mapRules($name, $longName);
+                $this->addArgRule($longName, $type);
+                $this->mapRules($name, $longName);
                 $helpName = $name . '|' . $longName;
             }
         }
@@ -350,11 +350,11 @@ class Qi_Console_ArgV
      * @param string $type Argument type
      * @return void
      */
-    protected function _addRule($name, $type)
+    protected function addArgRule($name, $type)
     {
-        $this->_rules[$name] = array(
+        $this->rules[$name] = [
             'type' => $type,
-        );
+        ];
     }
 
     /**
@@ -364,10 +364,10 @@ class Qi_Console_ArgV
      * @param string $alias Alias
      * @return void
      */
-    protected function _mapRules($name, $alias)
+    protected function mapRules($name, $alias)
     {
-        $this->_ruleMap[$name]  = $alias;
-        $this->_ruleMap[$alias] = $name;
+        $this->ruleMap[$name]  = $alias;
+        $this->ruleMap[$alias] = $name;
     }
 
     /**
@@ -378,11 +378,11 @@ class Qi_Console_ArgV
      */
     public function getRule($name)
     {
-        if (!isset($this->_rules[$name])) {
+        if (!isset($this->rules[$name])) {
             return false;
         }
 
-        return $this->_rules[$name];
+        return $this->rules[$name];
     }
 
     /**
@@ -403,7 +403,7 @@ class Qi_Console_ArgV
             $name .= ":";
         }
 
-        $this->_help[$name] = $helpText;
+        $this->help[$name] = $helpText;
     }
 
     /**
@@ -413,7 +413,7 @@ class Qi_Console_ArgV
      */
     public function getHelp()
     {
-        return $this->_help;
+        return $this->help;
     }
 
     /**
@@ -423,12 +423,12 @@ class Qi_Console_ArgV
      * @param string $value Option value
      * @return void
      */
-    protected function _setSingleOption($name, $value = true)
+    protected function setSingleOption($name, $value = true)
     {
-        $this->_data[$name] = $value;
+        $this->data[$name] = $value;
 
-        if (isset($this->_ruleMap[$name])) {
-            $this->_data[$this->_ruleMap[$name]] = $value;
+        if (isset($this->ruleMap[$name])) {
+            $this->data[$this->ruleMap[$name]] = $value;
         }
     }
 
@@ -439,14 +439,14 @@ class Qi_Console_ArgV
      * @param mixed $value A value
      * @return void
      */
-    protected function _setArgument($argument, $value)
+    protected function setArgument($argument, $value)
     {
         // This is in case the name of the argument
         // was not set during construction
-        $this->_data['__arg' . $this->_argumentIndex++] = $value;
+        $this->data['__arg' . $this->argumentIndex++] = $value;
 
         if ($argument) {
-            $this->_data[$argument] = $value;
+            $this->data[$argument] = $value;
         }
     }
 
@@ -459,7 +459,7 @@ class Qi_Console_ArgV
      * @param int &$i Current index
      * @return mixed
      */
-    protected function _getProperNextVal($args, &$i)
+    protected function getProperNextVal($args, &$i)
     {
         if (!isset($args[$i + 1])) {
             return null;
@@ -494,8 +494,8 @@ class Qi_Console_ArgV
      */
     public function get($option)
     {
-        if (isset($this->_data[$option])) {
-            return $this->_data[$option];
+        if (isset($this->data[$option])) {
+            return $this->data[$option];
         }
         return null;
     }
@@ -509,7 +509,7 @@ class Qi_Console_ArgV
      */
     public function set($var, $value)
     {
-        $this->_data[$var] = $value;
+        $this->data[$var] = $value;
     }
 
     /**
@@ -519,8 +519,8 @@ class Qi_Console_ArgV
      */
     public function getArgs()
     {
-        $out = array();
-        foreach ($this->_data as $arg => $value) {
+        $out = [];
+        foreach ($this->data as $arg => $value) {
             if (substr($arg, 0, 5) == '__arg') {
                 $out[] = $value;
             }

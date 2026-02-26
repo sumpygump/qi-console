@@ -31,6 +31,15 @@
 /**
  * Class to display a progressbar in the console
  *
+ * Example usage:
+ * ```
+ * $bar = new Qi_Console_ProgressBar("[%bar%] %fraction% %percent% %elapsed% %estimate%", "=>", "-", 80, 100);
+ * for ($i = 1; $i <= 100; $i++) {
+ *    $bar->update($i);
+ *    usleep(7500);
+ * }
+ * ```
+ *
  * @package Qi
  * @subpackage Console
  * @author Stefan Walk <et@php.net>
@@ -44,70 +53,70 @@ class Qi_Console_ProgressBar
      *
      * @var string
      */
-    protected $_skeleton;
+    protected $skeleton;
 
     /**
      * The bar gets filled with this
      *
      * @var string
      */
-    protected $_bar;
+    protected $bar;
 
     /**
      * The width of the bar
      *
      * @var int
      */
-    protected $_blen;
+    protected $blen;
 
     /**
      * The total width of the display
      *
      * @var int
      */
-    protected $_tlen;
+    protected $tlen;
 
     /**
      * The position of the counter when the job is `done'
      *
      * @var int
      */
-    protected $_target_num;
+    protected $target_num;
 
     /**
      * Options, like the precision used to display the numbers
      *
      * @var array
      */
-    protected $_options = array();
+    protected $options = [];
 
     /**
      * Length to erase
      *
      * @var int
      */
-    protected $_rlen = 0;
+    protected $rlen = 0;
 
     /**
      * When the progress started
      *
      * @var int
      */
-    protected $_start_time = null;
+    protected $start_time = null;
 
     /**
      * Rate datapoints
      *
      * @var array
      */
-    protected $_rate_datapoints = array();
+    protected $rate_datapoints = [];
 
     /**
      * Time when the bar was last drawn
      *
      * @var float
      */
-    protected $_last_update_time = 0.0;
+    protected $last_update_time = 0.0;
 
     /**
      * Constructor, sets format and size
@@ -129,7 +138,7 @@ class Qi_Console_ProgressBar
         $prefill,
         $width,
         $target_num,
-        $options = array()
+        $options = []
     ) {
         $this->reset(
             $formatstring,
@@ -180,7 +189,7 @@ class Qi_Console_ProgressBar
      *   example, if you wanted to display a progress bar for a download of a
      *   file that is 115 KB big, you would pass 115 here.
      * - The sixth argument optional. If passed, it should contain an array of
-     *   options. For example, passing array('absolute_width' => false) would
+     *   options. For example, passing ['absolute_width' => false] would
      *   set the absolute_width option to false. Current options are:
      *
      *     option             | def.  |  meaning
@@ -228,18 +237,18 @@ class Qi_Console_ProgressBar
         $prefill,
         $width,
         $target_num,
-        $options = array()
+        $options = []
     ) {
         if ($target_num == 0) {
             trigger_error(
                 "Qi_Console_ProgressBar: Using a target number "
                 . "equal to 0 is invalid, setting to 1 instead"
             );
-            $this->_target_num = 1;
+            $this->target_num = 1;
         } else {
-            $this->_target_num = $target_num;
+            $this->target_num = $target_num;
         }
-        $default_options = array(
+        $default_options = [
             'percent_precision'  => 2,
             'fraction_precision' => 0,
             'percent_pad'        => ' ',
@@ -249,9 +258,9 @@ class Qi_Console_ProgressBar
             'ansi_clear'         => false,
             'num_datapoints'     => 5,
             'min_draw_interval'  => 0.0,
-        );
+        ];
 
-        $intopts = array();
+        $intopts = [];
 
         foreach ($default_options as $key => $value) {
             if (!isset($options[$key])) {
@@ -261,7 +270,7 @@ class Qi_Console_ProgressBar
                 $intopts[$key] = $options[$key];
             }
         }
-        $this->_options = $options = $intopts;
+        $this->options = $options = $intopts;
         // placeholder
         $cur = '%2$\'' . $options['fraction_pad'][0] . strlen((int)$target_num) . '.'
                . $options['fraction_precision'] . 'f';
@@ -277,7 +286,7 @@ class Qi_Console_ProgressBar
         $perc = '%4$\'' . $options['percent_pad'][0] . $padding . '.'
                 . $options['percent_precision'] . 'f';
 
-        $transitions = array(
+        $transitions = [
             '%%'         => '%%',
             '%fraction%' => $cur . '/' . $max,
             '%current%'  => $cur,
@@ -286,13 +295,13 @@ class Qi_Console_ProgressBar
             '%bar%'      => '%1$s',
             '%elapsed%'  => '%5$s',
             '%estimate%' => '%6$s',
-        );
+        ];
 
-        $this->_skeleton = strtr($formatstring, $transitions);
+        $this->skeleton = strtr($formatstring, $transitions);
 
         $slen = strlen(
             sprintf(
-                $this->_skeleton,
+                $this->skeleton,
                 '',
                 0,
                 0,
@@ -313,10 +322,10 @@ class Qi_Console_ProgressBar
         $lbar = str_pad($bar, $blen, $bar[0], STR_PAD_LEFT);
         $rbar = str_pad($prefill, $blen, substr($prefill, -1, 1));
 
-        $this->_bar   = substr($lbar, -$blen) . substr($rbar, 0, $blen);
-        $this->_blen  = $blen;
-        $this->_tlen  = $tlen;
-        $this->_first = true;
+        $this->bar   = substr($lbar, -$blen) . substr($rbar, 0, $blen);
+        $this->blen  = $blen;
+        $this->tlen  = $tlen;
+        $this->first = true;
 
         return true;
     }
@@ -329,30 +338,30 @@ class Qi_Console_ProgressBar
      */
     public function update($current)
     {
-        $time = $this->_fetchTime();
-        $this->_addDatapoint($current, $time);
-        if ($this->_first) {
-            if ($this->_options['ansi_terminal']) {
+        $time = $this->fetchTime();
+        $this->addDatapoint($current, $time);
+        if ($this->first) {
+            if ($this->options['ansi_terminal']) {
                 echo "\x1b[s"; // save cursor position
             }
 
-            $this->_first      = false;
-            $this->_start_time = $this->_fetchTime();
+            $this->first      = false;
+            $this->start_time = $this->fetchTime();
 
             $this->display($current);
             return;
         }
 
-        $minDrawInterval = $this->_options['min_draw_interval'];
+        $minDrawInterval = $this->options['min_draw_interval'];
         if (
-            $time - $this->_last_update_time < $minDrawInterval
-            && $current != $this->_target_num
+            $time - $this->last_update_time < $minDrawInterval
+            && $current != $this->target_num
         ) {
             return;
         }
         $this->erase();
         $this->display($current);
-        $this->_last_update_time = $time;
+        $this->last_update_time = $time;
     }
 
     /**
@@ -365,32 +374,32 @@ class Qi_Console_ProgressBar
      */
     public function display($current)
     {
-        $percent = $current / $this->_target_num;
-        $filled  = round($percent * $this->_blen);
-        $visbar  = substr($this->_bar, $this->_blen - $filled, $this->_blen);
-        $elapsed = $this->_formatSeconds(
-            $this->_fetchTime() - $this->_start_time
+        $percent = $current / $this->target_num;
+        $filled  = round($percent * $this->blen);
+        $visbar  = substr($this->bar, $this->blen - $filled, $this->blen);
+        $elapsed = $this->formatSeconds(
+            $this->fetchTime() - $this->start_time
         );
 
-        $estimate = $this->_formatSeconds($this->_generateEstimate());
+        $estimate = $this->formatSeconds($this->generateEstimate());
 
-        $this->_rlen = printf(
-            $this->_skeleton,
+        $this->rlen = printf(
+            $this->skeleton,
             $visbar,
             $current,
-            $this->_target_num,
+            $this->target_num,
             $percent * 100,
             $elapsed,
             $estimate
         );
 
-        if (is_null($this->_rlen)) {
+        if (is_null($this->rlen)) {
             // fix for php-versions where printf doesn't return anything
-            $this->_rlen = $this->_tlen;
-        } elseif ($this->_rlen < $this->_tlen) {
+            $this->rlen = $this->tlen;
+        } elseif ($this->rlen < $this->tlen) {
             // fix for php versions between 4.3.7 and 5.x.y(?)
-            echo str_repeat(' ', $this->_tlen - $this->_rlen);
-            $this->_rlen = $this->_tlen;
+            echo str_repeat(' ', $this->tlen - $this->rlen);
+            $this->rlen = $this->tlen;
         }
         return true;
     }
@@ -404,18 +413,18 @@ class Qi_Console_ProgressBar
      */
     public function erase($clear = false)
     {
-        if ($this->_options['ansi_terminal'] and !$clear) {
-            if ($this->_options['ansi_clear']) {
+        if ($this->options['ansi_terminal'] and !$clear) {
+            if ($this->options['ansi_clear']) {
                 echo "\x1b[2K\x1b[u"; // restore cursor position
             } else {
                 echo "\x1b[u"; // restore cursor position
             }
         } elseif (!$clear) {
-            echo str_repeat(chr(0x08), $this->_rlen);
+            echo str_repeat(chr(0x08), $this->rlen);
         } else {
-            echo str_repeat(chr(0x08), $this->_rlen),
-                 str_repeat(chr(0x20), $this->_rlen),
-                 str_repeat(chr(0x08), $this->_rlen);
+            echo str_repeat(chr(0x08), $this->rlen),
+                 str_repeat(chr(0x20), $this->rlen),
+                 str_repeat(chr(0x08), $this->rlen);
         }
     }
 
@@ -425,7 +434,7 @@ class Qi_Console_ProgressBar
      * @param float $seconds The number of seconds
      * @return string
      */
-    protected function _formatSeconds($seconds)
+    protected function formatSeconds($seconds)
     {
         $hou = floor($seconds / 3600);
         $min = floor(($seconds - $hou * 3600) / 60);
@@ -449,7 +458,7 @@ class Qi_Console_ProgressBar
      *
      * @return int
      */
-    protected function _fetchTime()
+    protected function fetchTime()
     {
         if (!function_exists('microtime')) {
             return time();
@@ -467,16 +476,16 @@ class Qi_Console_ProgressBar
      * @param int $time The time
      * @return void
      */
-    protected function _addDatapoint($val, $time)
+    protected function addDatapoint($val, $time)
     {
-        $numDataPoints = $this->_options['num_datapoints'];
-        if (count($this->_rate_datapoints) == $numDataPoints) {
-            array_shift($this->_rate_datapoints);
+        $numDataPoints = $this->options['num_datapoints'];
+        if (count($this->rate_datapoints) == $numDataPoints) {
+            array_shift($this->rate_datapoints);
         }
-        $this->_rate_datapoints[] = array(
+        $this->rate_datapoints[] = [
             'time' => $time,
             'value' => $val,
-        );
+        ];
     }
 
     /**
@@ -484,16 +493,16 @@ class Qi_Console_ProgressBar
      *
      * @return float
      */
-    protected function _generateEstimate()
+    protected function generateEstimate()
     {
-        if (count($this->_rate_datapoints) < 2) {
+        if (count($this->rate_datapoints) < 2) {
             return 0.0;
         }
 
-        $first = $this->_rate_datapoints[0];
-        $last  = end($this->_rate_datapoints);
+        $first = $this->rate_datapoints[0];
+        $last  = end($this->rate_datapoints);
 
-        return ($this->_target_num - $last['value'])
+        return ($this->target_num - $last['value'])
             / ($last['value'] - $first['value'])
             * ($last['time'] - $first['time']);
     }

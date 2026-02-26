@@ -14,36 +14,35 @@
  * @subpackage Console
  * @author Jansen Price <jansen.price@gmail.com>
  * @license http://www.opensource.org/licenses/mit-license.php MIT
- * @version $Id$
  */
 class Qi_Console_Terminal
 {
     /**
      * @var object Terminfo Storage for the Terminfo object
      */
-    protected $_terminfo;
+    protected $terminfo;
 
     /**
      * @var float Width in columns of the terminal
      */
-    protected $_columns = 80;
+    protected $columns = 80;
 
     /**
      * @var float Height in rows of the terminal
      */
-    protected $_lines = 25;
+    protected $lines = 25;
 
     /**
      * @var mixed Whether this is a terminal
      */
-    protected $_isatty = true;
+    protected $isatty = true;
 
     /**
      * Whether terminal is cygwin
      *
      * @var bool
      */
-    protected $_isCygwin = false;
+    protected $isCygwin = false;
 
     /**
      * Create new Terminal object
@@ -51,27 +50,27 @@ class Qi_Console_Terminal
      * @param array $options options for initializing the object
      * @return void
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         if (
             isset($_SERVER['TERM'])
             && strpos($_SERVER['TERM'], 'cygwin') !== false
         ) {
-            $this->_isCygwin = true;
+            $this->isCygwin = true;
         }
 
-        $this->_setIsatty();
+        $this->setIsattyInternal();
 
         // Pass in terminfo object
         if (isset($options['terminfo'])) {
-            $this->_terminfo = $options['terminfo'];
+            $this->terminfo = $options['terminfo'];
         }
 
-        if (!$this->_terminfo) {
-            $this->_terminfo = new Qi_Console_Terminfo();
+        if (!$this->terminfo) {
+            $this->terminfo = new Qi_Console_Terminfo();
         }
 
-        if ($this->_isatty) {
+        if ($this->isatty) {
             $this->get_columns(true);
             $this->get_lines(true);
         }
@@ -82,29 +81,29 @@ class Qi_Console_Terminal
      *
      * @return void
      */
-    private function _setIsatty()
+    private function setIsattyInternal()
     {
         $term = null;
         if (isset($_SERVER['TERM'])) {
             $term = $_SERVER['TERM'];
         }
 
-        if ($this->_isCygwin) {
-            $this->_isatty = true;
+        if ($this->isCygwin) {
+            $this->isatty = true;
             return true;
         }
 
         if ($term == null && DIRECTORY_SEPARATOR == '\\') {
-            $this->_isatty = false;
+            $this->isatty = false;
             return false;
         }
 
         if (!function_exists('posix_isatty')) {
-            $this->_isatty = false;
+            $this->isatty = false;
             return false;
         }
-        $this->_isatty = posix_isatty(STDOUT);
-        return $this->_isatty;
+        $this->isatty = posix_isatty(STDOUT);
+        return $this->isatty;
     }
 
     /**
@@ -114,7 +113,7 @@ class Qi_Console_Terminal
      */
     public function isatty()
     {
-        return $this->_isatty;
+        return $this->isatty;
     }
 
     /**
@@ -129,11 +128,11 @@ class Qi_Console_Terminal
     public function setIsatty($val = null)
     {
         if (null === $val) {
-            $this->_setIsatty();
+            $this->setIsattyInternal();
             return;
         }
 
-        $this->_isatty = (bool) $val;
+        $this->isatty = (bool) $val;
     }
 
     /**
@@ -146,7 +145,7 @@ class Qi_Console_Terminal
      */
     public function printterm($text)
     {
-        if ($this->_isatty) {
+        if ($this->isatty) {
             Qi_Console_Std::out($text);
         }
     }
@@ -158,7 +157,7 @@ class Qi_Console_Terminal
      */
     public function clear()
     {
-        $this->printterm($this->_terminfo->clear());
+        $this->printterm($this->terminfo->clear());
         return $this;
     }
 
@@ -175,7 +174,7 @@ class Qi_Console_Terminal
             return $this;
         }
 
-        $this->printterm($this->_terminfo->cup($row, $column));
+        $this->printterm($this->terminfo->cup($row, $column));
         return $this;
     }
 
@@ -186,7 +185,7 @@ class Qi_Console_Terminal
      */
     public function bold_type()
     {
-        $this->printterm($this->_terminfo->bold());
+        $this->printterm($this->terminfo->bold());
         return $this;
     }
 
@@ -198,7 +197,7 @@ class Qi_Console_Terminal
      */
     public function set_fgcolor($num)
     {
-        $this->printterm($this->_terminfo->setaf($num));
+        $this->printterm($this->terminfo->setaf($num));
         return $this;
     }
 
@@ -210,7 +209,7 @@ class Qi_Console_Terminal
      */
     public function set_bgcolor($num)
     {
-        $this->printterm($this->_terminfo->setab($num));
+        $this->printterm($this->terminfo->setab($num));
         return $this;
     }
 
@@ -234,23 +233,23 @@ class Qi_Console_Terminal
      */
     public function get_columns($force = false)
     {
-        if (DIRECTORY_SEPARATOR != "\\" || $this->_isCygwin) {
+        if (DIRECTORY_SEPARATOR != "\\" || $this->isCygwin) {
             if ($force) {
                 $cmd = "tput cols";
                 exec($cmd, $output, $return);
                 if (!$return) {
-                    $this->_columns = trim($output[0]);
+                    $this->columns = trim($output[0]);
                 }
             } else {
-                $this->_columns = $this->_terminfo->getCapability('cols');
+                $this->columns = $this->terminfo->getCapability('cols');
             }
-            return $this->_columns;
+            return $this->columns;
         }
 
         // TODO: if windows, use the command 'mode' to get the columns
-        $this->_columns = 80;
+        $this->columns = 80;
 
-        return $this->_columns;
+        return $this->columns;
     }
 
     /**
@@ -261,21 +260,21 @@ class Qi_Console_Terminal
      */
     public function get_lines($force = false)
     {
-        if (DIRECTORY_SEPARATOR != "\\" || $this->_isCygwin) {
+        if (DIRECTORY_SEPARATOR != "\\" || $this->isCygwin) {
             if ($force) {
                 $cmd = "tput lines";
                 exec($cmd, $output, $return);
                 if (!$return) {
-                    $this->_lines = trim($output[0]);
+                    $this->lines = trim($output[0]);
                 }
             } else {
-                $this->_lines = $this->_terminfo->getCapability('lines');
+                $this->lines = $this->terminfo->getCapability('lines');
             }
-            return $this->_lines;
+            return $this->lines;
         }
 
         // TODO: if windows, use the command 'mode' to get the lines
-        $this->_lines = 25 ;
+        $this->lines = 25 ;
     }
 
     /**
@@ -286,11 +285,11 @@ class Qi_Console_Terminal
      */
     public function center_text($text)
     {
-        //$x = (int) (($this->_columns - strlen($text)) / 2);
+        //$x = (int) (($this->columns - strlen($text)) / 2);
 
         // Assume cursor is on the beginning of the line
         // Didn't use hpa for lack of support
-        $text = str_pad($text, $this->_columns, ' ', STR_PAD_BOTH);
+        $text = str_pad($text, $this->columns, ' ', STR_PAD_BOTH);
 
         echo $text;
 
@@ -315,7 +314,7 @@ class Qi_Console_Terminal
         $verticalPadding = true
     ) {
         if (null === $size) {
-            $size = $this->_columns;
+            $size = $this->columns;
         }
         $len = strlen($text) + 4;
 
@@ -430,7 +429,7 @@ class Qi_Console_Terminal
     /**
      * Magic call method
      *
-     * Attempts to execute the method to _terminfo->doCapability()
+     * Attempts to execute the method to terminfo->doCapability()
      *
      * @param string $method The name of the method being called
      * @param array $args An array of arguments passed to the method
@@ -446,10 +445,10 @@ class Qi_Console_Terminal
             $echo   = false;
         }
 
-        if ($this->_terminfo->hasCapability($method)) {
+        if ($this->terminfo->hasCapability($method)) {
             $args = array_merge(array($method), $args);
             $out  = call_user_func_array(
-                array($this->_terminfo, 'doCapability'),
+                array($this->terminfo, 'doCapability'),
                 $args
             );
         }
@@ -458,7 +457,7 @@ class Qi_Console_Terminal
             $this->printterm($out);
         } else {
             // Need to detect whether output is to a tty
-            if ($this->_isatty) {
+            if ($this->isatty) {
                 return $out;
             } else {
                 return '';
@@ -478,17 +477,17 @@ class Qi_Console_Terminal
      */
     public function do_capability($cap_name, $args = array())
     {
-        if (!$this->_terminfo->hasCapability($cap_name)) {
+        if (!$this->terminfo->hasCapability($cap_name)) {
             printf("%s not a cap", $cap_name);
         }
 
         $args = array_merge(array($cap_name), $args);
         $out  = call_user_func_array(
-            array($this->_terminfo, 'doCapability'),
+            array($this->terminfo, 'doCapability'),
             $args
         );
 
-        if ($this->_isatty) {
+        if ($this->isatty) {
             return $out;
         } else {
             return '';
@@ -505,21 +504,21 @@ class Qi_Console_Terminal
     public function get_capability($cap_name, $verbose = false)
     {
         if ($verbose) {
-            return $this->_terminfo->displayCapability($cap_name);
+            return $this->terminfo->displayCapability($cap_name);
         } else {
-            return $this->_terminfo->getCapability($cap_name, $verbose);
+            return $this->terminfo->getCapability($cap_name, $verbose);
         }
     }
 
     /**
-     * Report whether the _terminfo object has a certain capability
+     * Report whether the terminfo object has a certain capability
      *
      * @param mixed $cap_name Capability name
      * @return bool
      */
     public function has_capability($cap_name)
     {
-        return $this->_terminfo->hasCapability($cap_name);
+        return $this->terminfo->hasCapability($cap_name);
     }
 
     /**
@@ -529,18 +528,18 @@ class Qi_Console_Terminal
      */
     public function isCygwin()
     {
-        return $this->_isCygwin;
+        return $this->isCygwin;
     }
 
     /**
-     * Execute _terminfo->dump()
+     * Execute terminfo->dump()
      * Will ouput a listing of all the capabilities with their descriptions
      *
      * @return void
      */
     public function dump()
     {
-        $this->_terminfo->dump();
+        $this->terminfo->dump();
     }
 
     /**
@@ -550,6 +549,6 @@ class Qi_Console_Terminal
      */
     public function dumpCache()
     {
-        $this->_terminfo->dumpCache();
+        $this->terminfo->dumpCache();
     }
 }

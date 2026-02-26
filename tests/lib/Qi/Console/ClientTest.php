@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
  * @uses Qi_Console_Client
  * @package Qi
  * @author Jansen Price <jansen.price@gmail.com>
- * @version $Id$
  */
 class TestingClient extends Qi_Console_Client
 {
@@ -27,7 +26,7 @@ class TestingClient extends Qi_Console_Client
      */
     public function displayWarning($message, $ensureNewline = true)
     {
-        return parent::_displayWarning($message, $ensureNewline);
+        return parent::displayWarning($message, $ensureNewline);
     }
 
     /**
@@ -40,12 +39,12 @@ class TestingClient extends Qi_Console_Client
      */
     public function displayMessage($message, $ensureNewline = true, $color = 2)
     {
-        return parent::_displayMessage($message, $ensureNewline, $color);
+        return parent::displayMessage($message, $ensureNewline, $color);
     }
 
     public function displayError($message)
     {
-        return parent::_displayError($message);
+        return parent::displayError($message);
     }
 }
 
@@ -58,7 +57,7 @@ class TestingClient extends Qi_Console_Client
  */
 class ClientTest extends TestCase
 {
-    public $_object;
+    public $object;
 
     /**
      * Setup before each test
@@ -79,7 +78,7 @@ class ClientTest extends TestCase
 
         $args = new Qi_Console_ArgV(array('a' => '1'));
 
-        $this->_object = new TestingClient($args, $terminal);
+        $this->object = new TestingClient($args, $terminal);
     }
 
     /**
@@ -111,7 +110,7 @@ class ClientTest extends TestCase
     public function testDisplayWarning()
     {
         ob_start();
-        $this->_object->displayWarning('There is something amiss');
+        $this->object->displayWarning('There is something amiss');
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -127,7 +126,7 @@ class ClientTest extends TestCase
     public function testDisplayWarningNoNewLine()
     {
         ob_start();
-        $this->_object->displayWarning('There is something amiss', false);
+        $this->object->displayWarning('There is something amiss', false);
         $result = ob_get_contents();
         ob_end_clean();
 
@@ -138,7 +137,7 @@ class ClientTest extends TestCase
     public function testDisplayError()
     {
         ob_start();
-        $this->_object->displayError('There is something amiss');
+        $this->object->displayError('There is something amiss');
         $result = ob_get_contents();
         ob_end_clean();
 

@@ -22,56 +22,56 @@ class Qi_Console_TermLetters
      *
      * @var object
      */
-    protected $_terminal;
+    protected $terminal;
 
     /**
      * Color of text
      *
      * @var int
      */
-    protected $_color = 2;
+    protected $color = 2;
 
     /**
      * Default color
      *
      * @var int
      */
-    protected $_defaultColor = 2;
+    protected $defaultColor = 2;
 
     /**
      * Whether to consider escape codes when parsing text
      *
      * @var bool
      */
-    protected $_useEscapeCodes = true;
+    protected $useEscapeCodes = true;
 
     /**
      * Buffer for lines of the letters
      *
      * @var array
      */
-    protected $_lineBuffer = array();
+    protected $lineBuffer = [];
 
     /**
      * Length of the buffer
      *
      * @var int
      */
-    protected $_bufferLen = 0;
+    protected $bufferLen = 0;
 
     /**
      * Specified width in chars of printable area
      *
      * @var float
      */
-    protected $_width = 180;
+    protected $width = 180;
 
     /**
      * Enable auto wrap of long lines
      *
      * @var mixed
      */
-    protected $_enableWrap = true;
+    protected $enableWrap = true;
 
     /**
      * Constructor
@@ -79,32 +79,32 @@ class Qi_Console_TermLetters
      * @param array $options Additional options
      * @return void
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         if (isset($options['color'])) {
-            $this->_color = $options['color'];
+            $this->color = $options['color'];
         }
 
         if (isset($options['terminal'])) {
-            $this->_terminal = $options['terminal'];
+            $this->terminal = $options['terminal'];
         } else {
-            $this->_terminal = new Qi_Console_Terminal();
+            $this->terminal = new Qi_Console_Terminal();
         }
 
-        $this->_width = $this->_terminal->get_columns(
-            $this->_terminal->isatty()
+        $this->width = $this->terminal->get_columns(
+            $this->terminal->isatty()
         );
 
         if (isset($options['width'])) {
-            $this->_width = $options['width'];
+            $this->width = $options['width'];
         }
 
         if (isset($options['enable_wrap'])) {
-            $this->_enableWrap = (bool) $options['enableWrap'];
+            $this->enableWrap = (bool) $options['enableWrap'];
         }
 
         if (isset($options['use_escape_codes'])) {
-            $this->_useEscapeCodes = (bool) $options['use_escape_codes'];
+            $this->useEscapeCodes = (bool) $options['use_escape_codes'];
         }
     }
 
@@ -123,10 +123,10 @@ class Qi_Console_TermLetters
             $char = $string[$i];
             switch ($char) {
                 case "\n":
-                    $this->_echoBuffer();
+                    $this->echoBuffer();
                     break;
                 case "\\":
-                    if (!$this->_useEscapeCodes) {
+                    if (!$this->useEscapeCodes) {
                         $len = $this->addChar($char);
                         continue 2;
                     }
@@ -140,9 +140,9 @@ class Qi_Console_TermLetters
                     $nextChar = $string[$i + 1];
                     if (preg_match("/[0-8]/", $nextChar)) {
                         if ($nextChar == 0) {
-                            $this->_color = $this->_defaultColor;
+                            $this->color = $this->defaultColor;
                         } else {
-                            $this->_color = $nextChar;
+                            $this->color = $nextChar;
                         }
                         $i++;
                         continue 2;
@@ -150,7 +150,7 @@ class Qi_Console_TermLetters
 
                     switch ($nextChar) {
                         case "n":
-                            $this->_echoBuffer();
+                            $this->echoBuffer();
                             $i++;
                             break;
                         case "\\":
@@ -167,7 +167,7 @@ class Qi_Console_TermLetters
             }
         }
 
-        $this->_echoBuffer();
+        $this->echoBuffer();
     }
 
     /**
@@ -175,12 +175,12 @@ class Qi_Console_TermLetters
      *
      * @return void
      */
-    protected function _echoBuffer()
+    protected function echoBuffer()
     {
-        echo implode("\n", $this->_lineBuffer);
+        echo implode("\n", $this->lineBuffer);
         echo "\n";
-        $this->_resetLineBuffer();
-        $this->_terminal->op();
+        $this->resetLineBuffer();
+        $this->terminal->op();
     }
 
     /**
@@ -188,10 +188,10 @@ class Qi_Console_TermLetters
      *
      * @return void
      */
-    protected function _resetLineBuffer()
+    protected function resetLineBuffer()
     {
-        $this->_lineBuffer = array();
-        $this->_bufferLen  = 0;
+        $this->lineBuffer = [];
+        $this->bufferLen  = 0;
     }
 
     /**
@@ -202,7 +202,7 @@ class Qi_Console_TermLetters
      */
     public function addChar($char)
     {
-        $text = $this->generate_letter($char);
+        $text = $this->generateLetter($char);
 
         if ($text === false) {
             return false;
@@ -211,27 +211,27 @@ class Qi_Console_TermLetters
         $lines = explode("\n", $text);
 
         $letterAndBufferWidth = $this->getLetterWidth($char)
-            + $this->_bufferLen + 1;
+            + $this->bufferLen + 1;
 
         if (
-            $this->_enableWrap
-            && $letterAndBufferWidth > $this->_width
+            $this->enableWrap
+            && $letterAndBufferWidth > $this->width
         ) {
-            $this->_echoBuffer();
+            $this->echoBuffer();
         }
 
         $l = 0;
         foreach ($lines as $line) {
-            $this->_addToLineBuffer($l, $line);
+            $this->addToLineBuffer($l, $line);
             $l++;
         }
 
         // Add the width of this char to the buffer len (include the space
         // in between the chars
-        $this->_bufferLen = $this->_bufferLen
+        $this->bufferLen = $this->bufferLen
             + $this->getLetterWidth($char) + 1;
 
-        return $this->_bufferLen;
+        return $this->bufferLen;
     }
 
     /**
@@ -252,16 +252,16 @@ class Qi_Console_TermLetters
      * @param string $text String to append to that buffer
      * @return int Length of buffer
      */
-    protected function _addToLineBuffer($index, $text)
+    protected function addToLineBuffer($index, $text)
     {
-        if (!isset($this->_lineBuffer[$index])) {
-            $this->_lineBuffer[$index] = $text;
+        if (!isset($this->lineBuffer[$index])) {
+            $this->lineBuffer[$index] = $text;
         } else {
-            $this->_lineBuffer[$index] = $this->_lineBuffer[$index]
+            $this->lineBuffer[$index] = $this->lineBuffer[$index]
                 . ' ' . $text;
         }
 
-        return strlen($this->_lineBuffer[$index]);
+        return strlen($this->lineBuffer[$index]);
     }
 
     /**
@@ -272,11 +272,11 @@ class Qi_Console_TermLetters
      */
     public function getLetterWidth($letter)
     {
-        if (!isset($this->_letters[$letter])) {
+        if (!isset($this->letters[$letter])) {
             return 0;
         }
 
-        $letterRows = explode("\n", $this->_letters[$letter]);
+        $letterRows = explode("\n", $this->letters[$letter]);
 
         return strlen($letterRows[0]);
     }
@@ -287,13 +287,13 @@ class Qi_Console_TermLetters
      * @param string $letter Character to generate
      * @return string
      */
-    public function generate_letter($letter)
+    public function generateLetter($letter)
     {
-        if (!isset($this->_letters[$letter])) {
+        if (!isset($this->letters[$letter])) {
             return false;
         }
 
-        $letter_data = $this->_letters[$letter];
+        $letter_data = $this->letters[$letter];
 
         $len = strlen($letter_data);
         $out = '';
@@ -303,31 +303,31 @@ class Qi_Console_TermLetters
         foreach ($letter_data as $char) {
             switch ($char) {
                 case ' ':
-                    $out .= $this->_terminal->do_op();
+                    $out .= $this->terminal->do_op();
                     $out .= " ";
                     break;
                 case 'X':
-                    $out .= $this->_terminal->do_setab($this->_color);
+                    $out .= $this->terminal->do_setab($this->color);
                     $out .= " ";
                     break;
                 case '\'':
-                    $out .= $this->_terminal->do_setaf($this->_color);
+                    $out .= $this->terminal->do_setaf($this->color);
                     $out .= $this->uchr(9600);
                     break;
                 case ',':
-                    $out .= $this->_terminal->do_setaf($this->_color);
+                    $out .= $this->terminal->do_setaf($this->color);
                     $out .= $this->uchr(9604);
                     break;
                 case '#':
-                    $out .= $this->_terminal->do_setaf($this->_color);
+                    $out .= $this->terminal->do_setaf($this->color);
                     $out .= $this->uchr(9608);
                     break;
                 case '-':
-                    $out .= $this->_terminal->do_setaf($this->_color);
+                    $out .= $this->terminal->do_setaf($this->color);
                     $out .= $this->uchr(9642);
                     break;
                 case "\n":
-                    $out .= $this->_terminal->do_op();
+                    $out .= $this->terminal->do_op();
                     $out .= "\n";
                     break;
                 default:
@@ -335,7 +335,7 @@ class Qi_Console_TermLetters
             }
         }
 
-        $out .= $this->_terminal->do_capability('op');
+        $out .= $this->terminal->do_capability('op');
 
         return $out;
     }
@@ -378,7 +378,7 @@ class Qi_Console_TermLetters
      *
      * @var array
      */
-    protected $_letters = array(
+    protected $letters = [
         " " => "    \n    \n    \n    \n    ",
         "!" => " , \n # \n # \n , \n   ",
         '"' => ", ,\n' '\n   \n   \n   ",
@@ -474,5 +474,5 @@ class Qi_Console_TermLetters
         "|" => " # \n # \n # \n # \n ' ",
         "}" => "'', \n ,' \n ,''\n  # \n''  ",
         "~" => "    \n    \n,','\n    \n    ",
-    );
+    ];
 }

@@ -22,21 +22,21 @@ class Qi_Console_Client
      *
      * @var string
      */
-    protected $_args = '';
+    protected $args = '';
 
     /**
      * Terminal
      *
      * @var mixed
      */
-    protected $_terminal;
+    protected $terminal;
 
     /**
      * Verbosity level
      *
      * @var int
      */
-    protected static $_verbose = 0;
+    protected static $verbose = 0;
 
     /**
      * Constructor
@@ -49,9 +49,9 @@ class Qi_Console_Client
         Qi_Console_ArgV $args,
         Qi_Console_Terminal $terminal
     ) {
-        $this->_args = $args;
+        $this->args = $args;
 
-        $this->_terminal = $terminal;
+        $this->terminal = $terminal;
 
         $this->init();
     }
@@ -72,9 +72,9 @@ class Qi_Console_Client
      * @param bool $ensureNewline Whether a new line should be appended
      * @return void
      */
-    protected function _displayWarning($message, $ensureNewline = true)
+    protected function displayWarning($message, $ensureNewline = true)
     {
-        $this->_displayMessage($message, $ensureNewline, 1); //red
+        $this->displayMessage($message, $ensureNewline, 1); //red
     }
 
     /**
@@ -85,7 +85,7 @@ class Qi_Console_Client
      * @param int $color Color to use
      * @return void
      */
-    protected function _displayMessage(
+    protected function displayMessage(
         $message,
         $ensureNewline = true,
         $color = 2
@@ -94,9 +94,9 @@ class Qi_Console_Client
             $message .= "\n";
         }
 
-        $this->_terminal->setaf($color);
+        $this->terminal->setaf($color);
         echo $message;
-        $this->_terminal->op();
+        $this->terminal->op();
     }
 
     /**
@@ -105,10 +105,10 @@ class Qi_Console_Client
      * @param string $message Error message
      * @return void
      */
-    protected function _displayError($message)
+    protected function displayError($message)
     {
         echo "\n";
-        $this->_terminal->pretty_message($message, 7, 1);
+        $this->terminal->pretty_message($message, 7, 1);
         echo "\n";
     }
 
@@ -118,9 +118,9 @@ class Qi_Console_Client
      * @param string $message Error message
      * @return void
      */
-    protected function _halt($message)
+    protected function halt($message)
     {
-        $this->_displayError($message);
+        $this->displayError($message);
         $this->_safeExit(2);
     }
 
@@ -130,9 +130,9 @@ class Qi_Console_Client
      * @param int $status Exit status
      * @return void
      */
-    protected function _safeExit($status = 0)
+    protected function safeExit($status = 0)
     {
-        if ($this->_terminal->isatty()) {
+        if ($this->terminal->isatty()) {
             $this->_resetTty();
         }
 
@@ -146,7 +146,7 @@ class Qi_Console_Client
      *
      * @return void
      */
-    protected function _resetTty()
+    protected function resetTty()
     {
         if (DIRECTORY_SEPARATOR != "\\") {
             // unix
