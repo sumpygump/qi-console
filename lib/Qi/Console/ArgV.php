@@ -420,7 +420,7 @@ class Qi_Console_ArgV
      * Set a single option (one that starts with --)
      *
      * @param string $name Option name
-     * @param string $value Option value
+     * @param bool $value Option value
      * @return void
      */
     protected function setSingleOption($name, $value = true)
@@ -535,7 +535,7 @@ class Qi_Console_ArgV
      * parameters given when a program is invoked from the command line
      *
      * @param mixed $input Input as argument string
-     * @return void
+     * @return string[]
      */
     public static function parseArgumentString($input)
     {

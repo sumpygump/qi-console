@@ -275,6 +275,7 @@ class Qi_Console_Terminal
 
         // TODO: if windows, use the command 'mode' to get the lines
         $this->lines = 25 ;
+        return $this->lines;
     }
 
     /**

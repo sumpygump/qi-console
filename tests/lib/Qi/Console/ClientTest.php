@@ -26,7 +26,7 @@ class TestingClient extends Qi_Console_Client
      */
     public function displayWarning($message, $ensureNewline = true)
     {
-        return parent::displayWarning($message, $ensureNewline);
+        parent::displayWarning($message, $ensureNewline);
     }
 
     /**
@@ -39,12 +39,12 @@ class TestingClient extends Qi_Console_Client
      */
     public function displayMessage($message, $ensureNewline = true, $color = 2)
     {
-        return parent::displayMessage($message, $ensureNewline, $color);
+        parent::displayMessage($message, $ensureNewline, $color);
     }
 
     public function displayError($message)
     {
-        return parent::displayError($message);
+        parent::displayError($message);
     }
 }
 

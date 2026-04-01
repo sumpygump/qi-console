@@ -20,9 +20,9 @@ class Qi_Console_Client
     /**
      * Run time arguments
      *
-     * @var string
+     * @var Qi_Console_ArgV
      */
-    protected $args = '';
+    protected $args;
 
     /**
      * Terminal
@@ -121,7 +121,7 @@ class Qi_Console_Client
     protected function halt($message)
     {
         $this->displayError($message);
-        $this->_safeExit(2);
+        $this->safeExit(2);
     }
 
     /**
@@ -133,7 +133,7 @@ class Qi_Console_Client
     protected function safeExit($status = 0)
     {
         if ($this->terminal->isatty()) {
-            $this->_resetTty();
+            $this->resetTty();
         }
 
         exit($status);

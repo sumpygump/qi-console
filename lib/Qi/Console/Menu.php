@@ -114,7 +114,7 @@ class Qi_Console_Menu
         Qi_Console_Std::out($this->terminfo->doCapability('clear'));
         Qi_Console_Std::out("\n" . $this->doTitle($this->title));
 
-        $entries_per_column = ceil($this->count / $this->columns);
+        $entries_per_column = (int) ceil($this->count / $this->columns);
 
         if (isset($this->menu_items[0])) {
             $first = 0;

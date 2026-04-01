@@ -119,6 +119,13 @@ class Qi_Console_ProgressBar
     protected $last_update_time = 0.0;
 
     /**
+     * first
+     *
+     * @var bool
+     */
+    protected $first = true;
+
+    /**
      * Constructor, sets format and size
      *
      * See the reset() method for documentation.
@@ -334,7 +341,7 @@ class Qi_Console_ProgressBar
      * Updates the bar with new progress information
      *
      * @param int $current position of the progress counter
-     * @return bool
+     * @return void
      */
     public function update($current)
     {
@@ -409,7 +416,7 @@ class Qi_Console_ProgressBar
      *
      * @param bool $clear Whether the bar should be cleared in addition to
      *             resetting the cursor position
-     * @return bool
+     * @return void
      */
     public function erase($clear = false)
     {
